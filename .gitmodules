@@ -1,0 +1,24 @@
+[submodule "packages/world.opensemantic.core"]
+	path = packages/world.opensemantic.core
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.core
+[submodule "packages/world.opensemantic.base"]
+	path = packages/world.opensemantic.base
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.base
+[submodule "packages/world.opensemantic.lab"]
+	path = packages/world.opensemantic.lab
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.lab
+[submodule "packages/world.opensemantic.lab.virtual"]
+	path = packages/world.opensemantic.lab.virtual
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.lab.virtual
+[submodule "packages/world.opensemantic.demo.lab.virtual"]
+	path = packages/world.opensemantic.demo.lab.virtual
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.demo.lab.virtual
+[submodule "packages/world.opensemantic.demo"]
+	path = packages/world.opensemantic.demo
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.demo
+[submodule "packages/world.opensemantic.meta.docs"]
+	path = packages/world.opensemantic.meta.docs
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.meta.docs
+[submodule "packages/world.opensemantic.meta.legal"]
+	path = packages/world.opensemantic.meta.legal
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.meta.legal
