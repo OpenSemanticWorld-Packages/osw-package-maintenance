@@ -31,7 +31,7 @@ bundle = package.PagePackageBundle(
         f"{package_name}": package.PagePackage(
             globalID=f"{package_id}",
             label=package_name,
-            version="0.12.0",
+            version="0.13.0",
             description="Provides core functionalities of OpenSemanticWorld / OpenSemanticLab",
             baseURL=f"https://raw.githubusercontent.com/{package_repo_org}/{package_repo}/{package_branch}/{package_subdir}/",
         )
@@ -84,7 +84,9 @@ wtsite.create_page_package(
             "Template:Editor/Spreadsheet",
             "Template:Editor/SvgEdit",
             "Template:Editor/Wellplate",
-            "Template:Viewer/Kekule"
+            "Template:Viewer/Kekule",
+            "Template:Viewer/Github/Code",
+            "Module:Viewer/Github",
         ],
     )
 )
