@@ -15,7 +15,7 @@ class WorldMeta(Package):
     # description: is required but not provided here -> needs to be set in each script
     language = "en"
     # version: is required but not provided here -> needs to be set in each script
-    # authors: is required but not provided here -> needs to be set in each script
+    # author: is required but not provided here -> needs to be set in each script
     publisher = "OpenSemanticWorld"
     # page_titles: is required but not provided here -> needs to be set in each script
 
