@@ -39,3 +39,4 @@ class OslCreat(Package.CreationConfig):
     credentials_file_path: Optional[FilePath] = (
         Path(__file__).parent / "accounts.pwd.yaml"
     )
+    skip_slot_suffix_for_main = True
