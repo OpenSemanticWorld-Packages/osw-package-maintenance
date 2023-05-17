@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from osw.wiki_tools import create_page_package
 from reusable import WorldCreat, WorldMeta
 
 # Provide information on the page package to be created
@@ -73,12 +72,11 @@ package_meta_data = WorldMeta(
 # Provide the information needed (only) to create the page package
 package_creation_config = WorldCreat(
     # Specify the path to the working directory - where the package is stored on disk
-    working_dir=Path(__file__).parents[2]
+    working_dir=Path(__file__).parents[1]
     / "packages"
     / package_meta_data.repo,
 )
 # Create the page package
-create_page_package(
-    meta_data=package_meta_data,
+package_meta_data.create(
     creation_config=package_creation_config,
 )
