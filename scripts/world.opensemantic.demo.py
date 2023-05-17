@@ -1,60 +1,47 @@
-import os
+from pathlib import Path
 
-import osw.model.page_package as package
-from osw.wtsite import WtSite
+from reusable import WorldCreat, WorldMeta
 
-pwd_file_path = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "accounts.pwd.yaml"
-)
-
-wtsite = WtSite.from_domain("wiki-dev.open-semantic-lab.org", pwd_file_path)
-
-package_repo_org = "OpenSemanticWorld-Packages"
-package_repo = "world.opensemantic.demo"
-package_id = "world.opensemantic.demo.common"
-package_name = "OSW Demo - Common"
-package_subdir = "common"
-package_branch = "main"
-
-working_dir = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "packages",
-    package_repo,
-)
-
-
-bundle = package.PagePackageBundle(
-    publisher=f"OpenSemanticWorld",
+# Provide information on the page package to be created
+package_meta_data = WorldMeta(
+    # Package name
+    name="OSW Demo - Common",
+    # Package repository name - usually the GitHub repository name
+    repo="world.opensemantic.demo",
+    # Package ID - usually the same as repo
+    id="world.opensemantic.demo.common",
+    # Package subdirectory - usually resembling parts of the package name
+    subdir="common",
+    # Package branch - usually "main"
+    branch="main",
+    # Provide a package description
+    description=("Provides common demo content"),
+    # Specify the package version - use semantic versioning
+    version="0.2.0",
+    # Author(s)
     author=["Simon Stier"],
-    language="en",
-    publisherURL=f"https://github.com/{package_repo_org}/{package_repo}",
-    packages={
-        f"{package_name}": package.PagePackage(
-            globalID=f"{package_id}",
-            label=package_name,
-            version="0.2.0",
-            description="Provides common demo content",
-            baseURL=f"https://raw.githubusercontent.com/{package_repo_org}/{package_repo}/{package_branch}/{package_subdir}/"
-        )
-    },
+    # List the full page titles of the pages to be included in the package
+    # You can include a comment in the same line, stating the page label
+    page_titles=[
+        "Zentrales_Wiki/Landing_page_v2",
+        "Item:OSWb894a0c0e11c47d8a0dc591f75c7962c",  # TowardsAnOpenSemanticWorld
+        "Item:OSW0e49b7ed40774f0a9788158794cb88cf",  # FemsEuromat2023
+        "Item:OSW3a941905208445c2ae5d181646a87de2",  # Porridge
+        "Item:OSWea3abf8df16940ba87dc7b68ddcf6e34",  # DemoArticle
+        "Item:OSW43b7ce95da134566bc69f221442cfd18",  # DemoProject
+        "Item:OSW727ae933ec6d48f18e637e8ffe15e436",  # DemoElnEntry
+        "Item:OSW8ec5338887b04936869798218254c1e7",  # DemoUser
+        "Item:OSWe0dc3ee6559648659238b9dd4372cb8f",  # Benzene
+    ],
 )
-
-wtsite.create_page_package(
-    package.PagePackageConfig(
-        name=package_name,
-        config_path=os.path.join(working_dir, f"packages.json"),
-        content_path=os.path.join(working_dir, package_subdir),
-        bundle=bundle,
-        titles=[
-            "Zentrales_Wiki/Landing_page_v2", 
-            "Item:OSWb894a0c0e11c47d8a0dc591f75c7962c", # TowardsAnOpenSemanticWorld
-            "Item:OSW0e49b7ed40774f0a9788158794cb88cf", # FemsEuromat2023
-            "Item:OSW3a941905208445c2ae5d181646a87de2", # Porridge
-            "Item:OSWea3abf8df16940ba87dc7b68ddcf6e34", # DemoArticle
-            "Item:OSW43b7ce95da134566bc69f221442cfd18", # DemoProject
-            "Item:OSW727ae933ec6d48f18e637e8ffe15e436", # DemoElnEntry
-            "Item:OSW8ec5338887b04936869798218254c1e7", # DemoUser
-            "Item:OSWe0dc3ee6559648659238b9dd4372cb8f", # Benzene
-        ]
-    )
+# Provide the information needed (only) to create the page package
+package_creation_config = WorldCreat(
+    # Specify the path to the working directory - where the package is stored on disk
+    working_dir=Path(__file__).parents[1]
+    / "packages"
+    / package_meta_data.repo,
+)
+# Create the page package
+package_meta_data.create(
+    creation_config=package_creation_config,
 )

@@ -20,8 +20,8 @@ package_meta_data = WorldMeta(
     ),
     # Specify the package version - use semantic versioning
     version="0.13.0",
-    # Authors
-    authors=["Simon Stier", "Lukas Gold"],
+    # Author(s)
+    author=["Simon Stier", "Lukas Gold"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
