@@ -19,9 +19,15 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.13.0",
+    version="0.17.2",
+    # Specify the required MediaWiki extensions
+    requiredExtensions=[
+        "OpenSemanticLab",
+        "ExternalData",
+        "WikiMarkdown"
+    ],
     # Author(s)
-    author=["Simon Stier", "Lukas Gold"],
+    author=["Simon Stier", "Lukas Gold", "Andreas Räder"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
@@ -46,10 +52,26 @@ package_meta_data = WorldMeta(
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
         "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool
         "Category:Property",
+        "Category:AnnotationProperty",
         "Category:ObjectProperty",
+        "Category:QuantityProperty",
         "Category:QuantityProperty",
         "Category:OSW1b15ddcf042c4599bd9d431cbfdf3430",  # MainQuantityProperty
         "Category:OSW69f251a900944602a08d1cca830249b5",  # SubQuantityProperty
+        "Property:IsA",
+        "Property:HasType",
+        "Property:SubClassOf",
+        "Property:HasUuid",
+        "Property:HasName",
+        "Property:HasLabel",
+        "Property:HasDescription",
+        "Property:HasImage"
+        "Property:HasDate",
+        "Property:HasStartDate",
+        "Property:HasStartDateAndTime",
+        "Property:HasEndDate",
+        "Property:HasEndDateAndTime",
+        "Property:HasUnitSymbol",
         "Template:Helper/UI/Tiles/Grid",
         "Template:Helper/UI/Tiles/Tile",
         "Template:Helper/UI/VE/Hidden",
@@ -66,7 +88,7 @@ package_meta_data = WorldMeta(
         "Template:Editor/Wellplate",
         "Template:Viewer/Kekule",
         "Template:Viewer/Github/Code",
-        "Module:Viewer/Github",
+        "Module:Viewer/Github", # requires Extension:ExternalData, Extension:WikiMarkdown
     ],
 )
 # Provide the information needed (only) to create the page package
