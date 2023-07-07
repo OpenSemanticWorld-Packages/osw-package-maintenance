@@ -22,3 +22,7 @@
 [submodule "packages/world.opensemantic.meta.legal"]
 	path = packages/world.opensemantic.meta.legal
 	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.meta.legal
+[submodule "packages/world.opensemantic.ontology"]
+	path = packages/world.opensemantic.ontology
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.ontology
+	branch = main
