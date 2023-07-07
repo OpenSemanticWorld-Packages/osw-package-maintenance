@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides core documentation of OpenSemanticWorld / -Lab"),
     # Specify the package version - use semantic versioning
-    version="0.4.3",
+    version="0.6.0",
     # Author(s)
     author=["Simon Stier", "Lukas Gold"],
     # List the full page titles of the pages to be included in the package
@@ -36,6 +36,8 @@ package_meta_data = WorldMeta(
         "Item:OSWab674d663a5b472f838d8e1eb43e6784",  # OswSchema
         "Item:OSW659a81662ff44af1b2b6febeee7c3a25",  # OswPythonPackage
         # "Item:OSW92619b0700984fe7913e5fbbd7f194dc", # OswSpecialEditors
+        "Item:OSWc596ce27af054764ae9716748d01555e",  # OswOntologyImport
+        "Item:OSWdb485a954a88465287b341d2897a84d6",  # OswIntroduction
     ],
 )
 # Provide the information needed (only) to create the page package
