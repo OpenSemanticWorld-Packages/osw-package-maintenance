@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("For modelling, simulation and optimization"),
     # Specify the package version - use semantic versioning
-    version="0.2.0",
+    version="0.3.0",
     # Author(s)
     author=["Simon Stier", "Andreas Räder"],
     # List the full page titles of the pages to be included in the package
@@ -25,7 +25,7 @@ package_meta_data = WorldMeta(
     page_titles=[
         "Category:OSW8e511130cecf4d7fa4177c9c65904fc1",  # Model
         "Category:OSWecff4345b4b049218f8d6628dc2f2f21",  # MetaModel
-        "Category:OSW553f78cc66194ae1873241207b906c4b",  # BattmoModel
+        "Category:OSW22dc1c3790974a1bb7187d7a77f7e767",  # DataSoftware
     ],
 )
 # Provide the information needed (only) to create the page package
