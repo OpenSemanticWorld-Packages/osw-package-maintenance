@@ -17,13 +17,14 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides schemas for ontology terms"),
     # Specify the package version - use semantic versioning
-    version="0.3.0",
+    version="0.3.1",
     # Author(s)
     author=["Simon Stier"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
         "Category:OSW725a3cf5458f4daea86615fcbd0029f8",  # OwlClass
+        "Category:OSW6b9ef2784a934b8ab96523366e23e906",  # OwlIndividual
         "Category:OSW57beed5e1294434ba77bb6516e461456",  # EmmoTerm
         "Category:OSW9deb690d6ebb4eaaa1ca5a24c2f32cad",  # OeoTerm
     ],
