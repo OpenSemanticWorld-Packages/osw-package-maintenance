@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.19.6",
+    version="0.19.7",
     # Specify the required MediaWiki extensions
     requiredExtensions=[
         "OpenSemanticLab",
@@ -55,7 +55,7 @@ package_meta_data = WorldMeta(
         "Category:Property",
         "Category:AnnotationProperty",
         "Category:ObjectProperty",
-        "Category:QuantityProperty",
+        "Category:DataProperty",
         "Category:QuantityProperty",
         "Category:OSW1b15ddcf042c4599bd9d431cbfdf3430",  # MainQuantityProperty
         "Category:OSW69f251a900944602a08d1cca830249b5",  # SubQuantityProperty
