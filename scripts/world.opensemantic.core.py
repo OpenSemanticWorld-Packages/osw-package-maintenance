@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.20.0",
+    version="0.21.0",
     # Specify the required MediaWiki extensions
     requiredExtensions=[
         "OpenSemanticLab",
@@ -53,6 +53,10 @@ package_meta_data = WorldMeta(
         "Category:OSW11a53cdfbdc24524bf8ac435cbf65d9d",  # WikiFile
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
         "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4", # State
+        "Category:OSWc5d4829ed2744a219ba027171c75fa1d", # Task
+        "Item:OSWf474ec34b7df451ea8356134241aef8a",  # State:Done
+        "Item:OSWa2b4567ad4874ea1b9adfed19a3d06d1",  # State:In work
+        "Item:OSWaa8d29404288446a9f3ec7afa4e2a512",  # State:To do
         "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool
         "Category:Property",
         "Category:AnnotationProperty",
@@ -68,7 +72,7 @@ package_meta_data = WorldMeta(
         "Property:HasName",
         "Property:HasLabel",
         "Property:HasDescription",
-        "Property:HasImage"
+        "Property:HasImage",
         "Property:HasDate",
         "Property:HasStartDate",
         "Property:HasStartDateAndTime",
@@ -89,6 +93,7 @@ package_meta_data = WorldMeta(
         "Template:Editor/Spreadsheet",
         "Template:Editor/SvgEdit",
         "Template:Editor/Wellplate",
+        "Template:Editor/Kanban",
         "Template:Viewer/Kekule",
         "Template:Viewer/Github/Code",
         "Module:Viewer/Github", # requires Extension:ExternalData, Extension:WikiMarkdown

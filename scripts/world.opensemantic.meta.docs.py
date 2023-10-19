@@ -17,9 +17,9 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides core documentation of OpenSemanticWorld / -Lab"),
     # Specify the package version - use semantic versioning
-    version="0.6.0",
+    version="0.6.2",
     # Author(s)
-    author=["Simon Stier", "Lukas Gold"],
+    author=["Simon Stier", "Lukas Gold", "Andeas Räder"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
