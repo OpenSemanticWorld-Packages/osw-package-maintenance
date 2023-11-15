@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.24.0",
+    version="0.24.1",
     # Specify the required MediaWiki extensions
     requiredExtensions=[
         "OpenSemanticLab",
@@ -75,6 +75,8 @@ package_meta_data = WorldMeta(
         "Property:HasUuid",
         "Property:HasName",
         "Property:HasLabel",
+        "Property:Display title of lowercase",
+        "Property:Display title of normalized",
         "Property:HasDescription",
         "Property:HasImage",
         "Property:HasDate",
