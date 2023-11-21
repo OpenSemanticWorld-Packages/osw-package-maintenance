@@ -26,3 +26,6 @@
 	path = packages/world.opensemantic.ontology
 	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.ontology
 	branch = main
+[submodule "packages/world.opensemantic.batteries"]
+	path = packages/world.opensemantic.batteries
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.batteries.git

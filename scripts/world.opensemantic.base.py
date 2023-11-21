@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.13.0",
+    version="0.14.0",
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Alexander Triol"],
     # List the full page titles of the pages to be included in the package
