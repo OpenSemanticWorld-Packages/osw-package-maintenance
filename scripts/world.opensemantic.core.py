@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.24.1",
+    version="0.26.2",
     # Specify the required MediaWiki extensions
     requiredExtensions=[
         "OpenSemanticLab",
@@ -103,6 +103,9 @@ package_meta_data = WorldMeta(
         "Template:Viewer/Kekule",
         "Template:Viewer/Github/Code",
         "Module:Viewer/Github", # requires Extension:ExternalData, Extension:WikiMarkdown
+        "Template:Viewer/Link",
+        "Template:Viewer/Media",
+        "Module:Media",
     ],
 )
 # Provide the information needed (only) to create the page package
