@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.15.0",
+    version="0.16.0",
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Alexander Triol"],
     # List the full page titles of the pages to be included in the package
@@ -31,6 +31,9 @@ package_meta_data = WorldMeta(
         "Category:OSWfe72974590fd4e8ba94cd4e8366375e8",  # DataSet
         "Category:OSW3d238d05316e45a4ac95a11d7b24e36b",  # Location
         "Category:OSWf0fe562f422d49c6877490b3dfee2f3f",  # Device
+        "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess ToDo: add Property:HasApprover, Property:HasOrderer", "Property:HasContact"
+        "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
+        "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess ToDo: maybe tp specific
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
         "Category:OSW8c56fd1e858f499da801691c5f2b7309",  # WebService
