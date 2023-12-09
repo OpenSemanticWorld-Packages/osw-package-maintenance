@@ -17,12 +17,13 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.16.0",
+    version="0.17.0",
     # Author(s)
-    author=["Simon Stier", "Lukas Gold", "Alexander Triol"],
+    author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
+        #"Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # PhysicalItem
         "Category:OSW92cc6b1a2e6b4bb7bad470dfdcfdaf26",  # Article
         "Category:OSW494f660e6a714a1a9681c517bbb975da",  # Tutorial
         "Category:OSW0e084decca6f48a7b023d6b7b2c1452d",  # Event
@@ -30,8 +31,9 @@ package_meta_data = WorldMeta(
         "Category:OSWa5812d3b5119416c8da1606cbe7054eb",  # Term
         "Category:OSWfe72974590fd4e8ba94cd4e8366375e8",  # DataSet
         "Category:OSW3d238d05316e45a4ac95a11d7b24e36b",  # Location
+        "Category:OSWd845b96813a344458f140e48c4d063fd",  # MetaDeviceCategory
         "Category:OSWf0fe562f422d49c6877490b3dfee2f3f",  # Device
-        "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess ToDo: add Property:HasApprover, Property:HasOrderer", "Property:HasContact"
+        "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess
         "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
         "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess ToDo: maybe tp specific
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
@@ -64,6 +66,25 @@ package_meta_data = WorldMeta(
         "Item:OSWab093fd8af104a49882704cea3bbaf7b", # FunctionalRequirement
         "Item:OSWbb07a72940554b1b978c44e5db4bd314", # NonFunctionalRequirement
         "Template:Editor/Requirements",
+        "Property:HasApprover", 
+        "Property:HasOrderer", 
+        "Property:HasContact",
+        "Property:HasUrl",
+        "Property:HasVersion",
+        "Property:HasManufacturer",
+        "Property:HasManual",
+        #"Property:HasPurpose",
+        "Property:HasResponsiblePerson",
+        "Property:IsLocatedIn",
+        "Property:HasDepartment",
+        #"Property:HasDatabase",
+        "Property:HasInventoryNumber",
+        #"Property:HasMeasurementChannels",
+        "Property:HasRiskAssessment",
+        "Property:HasOwner",
+        "Property:HasSerialNumber",
+        "Property:HasNetworkDomain",
+        "Property:HasIp4Address"
     ],
 )
 # Provide the information needed (only) to create the page package
