@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.26.2",
+    version="0.26.8",
     # Specify the required MediaWiki extensions
     requiredExtensions=[
         "OpenSemanticLab",
@@ -85,6 +85,7 @@ package_meta_data = WorldMeta(
         "Property:HasEndDate",
         "Property:HasEndDateAndTime",
         "Property:HasUnitSymbol",
+        #"Property:HasTypicalProcess", # used by tool
         "Template:Helper/UI/Tiles/Grid",
         "Template:Helper/UI/Tiles/Tile",
         "Template:Helper/UI/VE/Hidden",

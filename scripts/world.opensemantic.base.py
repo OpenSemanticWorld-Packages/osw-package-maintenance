@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.17.0",
+    version="0.17.10",
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol"],
     # List the full page titles of the pages to be included in the package
@@ -51,6 +51,7 @@ package_meta_data = WorldMeta(
         "Category:OSWac9f0e49d8024804bd7d77058322a3fe",  # RoomUsage
         "Category:OSWae92be81cdb34d22844d4791ef790d93",  # AreaUsageType
         "Category:OSW1969007d5acf40539642877659a02c23",  # Organization
+        "Category:OSWcffdc90247c142eca7f23ab6c69e49a1",  # NonGovernmentalOrganization
         "Category:OSWd9521d3054814dd29c2bcdbd9185d1f0",  # Association
         "Category:OSW5f4a3751d23e482d80fb0b72dcd6bc31",  # Corporation
         "Category:OSWd7085ef89b0e4a69ac4f2d28bda2d2c0",  # Foundation
@@ -66,6 +67,7 @@ package_meta_data = WorldMeta(
         "Item:OSWab093fd8af104a49882704cea3bbaf7b", # FunctionalRequirement
         "Item:OSWbb07a72940554b1b978c44e5db4bd314", # NonFunctionalRequirement
         "Template:Editor/Requirements",
+        "Property:HasPhoneNumber",
         "Property:HasApprover", 
         "Property:HasOrderer", 
         "Property:HasContact",
