@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.17.10",
+    version="0.17.13",
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol"],
     # List the full page titles of the pages to be included in the package
@@ -35,7 +35,7 @@ package_meta_data = WorldMeta(
         "Category:OSWf0fe562f422d49c6877490b3dfee2f3f",  # Device
         "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess
         "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
-        "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess ToDo: maybe tp specific
+        "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess ToDo: maybe to specific
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
         "Category:OSW8c56fd1e858f499da801691c5f2b7309",  # WebService
@@ -67,6 +67,8 @@ package_meta_data = WorldMeta(
         "Item:OSWab093fd8af104a49882704cea3bbaf7b", # FunctionalRequirement
         "Item:OSWbb07a72940554b1b978c44e5db4bd314", # NonFunctionalRequirement
         "Template:Editor/Requirements",
+        "Property:HasId",
+        "Property:IsRelatedTo",
         "Property:HasPhoneNumber",
         "Property:HasApprover", 
         "Property:HasOrderer", 
