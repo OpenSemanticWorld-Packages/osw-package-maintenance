@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.28.0",
+    version="0.30.0",
     # Specify the required MediaWiki extensions
     requiredExtensions=[
         "OpenSemanticLab",
@@ -53,11 +53,16 @@ package_meta_data = WorldMeta(
         "Category:OSW11a53cdfbdc24524bf8ac435cbf65d9d",  # WikiFile
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
         "Category:OSWc5d4829ed2744a219ba027171c75fa1d", # Task
-        "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4", # State
+        "Category:OSWcbb09a36336740c6a2cd62db9bf647ec", # IntangibleItem
+        "Category:OSWa5812d3b5119416c8da1606cbe7054eb",  # DefinedTerm (moved from base)
+        "Category:OSW09f6cdd54bc54de786eafced5f675cbe", # Keyword
+        "Category:OSWd02741381aaa4709ae0753a0edc341ce", # Enumeration
+        "Category:OSW2c32802be59040248c85eda3479d484c", # StatusEnumeration
+        "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4", # TaskStatus (required for Task/Kanban Board)
         "Item:OSWf474ec34b7df451ea8356134241aef8a",  # State:Done
         "Item:OSWa2b4567ad4874ea1b9adfed19a3d06d1",  # State:In work
         "Item:OSWaa8d29404288446a9f3ec7afa4e2a512",  # State:To do
-        "Category:OSW65c8449bdd4f4fbcb7f68203a11d6e8f", # Priority
+        "Category:OSW65c8449bdd4f4fbcb7f68203a11d6e8f", # Priority (required for Task/Kanban Board)
         "Item:OSW8743c7d03c4e46c1bd42bb05e1a082d9", # High
         "Item:OSW8d781c35212548fa9b2fccad3765da65", # Medium
         "Item:OSWcaf7db070ad6407babc5245e84d76840", # Low
@@ -106,6 +111,7 @@ package_meta_data = WorldMeta(
         "Module:Viewer/Github", # requires Extension:ExternalData, Extension:WikiMarkdown
         "Template:Viewer/Link",
         "Template:Viewer/Media",
+        "Template:Viewer/File", # to display files in tables
         "Module:Media",
     ],
 )
