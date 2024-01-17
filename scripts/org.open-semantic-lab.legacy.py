@@ -18,6 +18,8 @@ package_meta_data = OslMeta(
     description=("Provides core functionalities of OpenSemanticLab < 0.2.0"),
     # Specify the package version - use semantic versioning
     version="0.1.0",
+    # Specify the required PagePackages
+    requiredPackages=[],
     # Author(s)
     author=["Simon Stier"],
     # List the full page titles of the pages to be included in the package

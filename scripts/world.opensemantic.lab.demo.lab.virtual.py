@@ -18,6 +18,8 @@ package_meta_data = WorldMeta(
     description=("Demo content for modelling, simulation and optimization"),
     # Specify the package version - use semantic versioning
     version="0.3.0",
+    # Specify the required PagePackages
+    requiredPackages=[],
     # Author(s)
     author=["Simon Stier"],
     # List the full page titles of the pages to be included in the package

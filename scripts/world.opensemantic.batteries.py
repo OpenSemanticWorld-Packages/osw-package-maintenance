@@ -16,10 +16,14 @@ package_meta_data = WorldMeta(
     branch="main",
     # Provide a package description
     description=(
-        "Provides battery specific items like ElectrochemicalTest, " "BatteryCell, etc."
+        "Provides battery specific items like ElectrochemicalTest, BatteryCell, etc."
     ),
     # Specify the package version - use semantic versioning
     version="0.1.0",
+    # Specify the required PagePackages
+    requiredPackages=[
+        "world.opensemantic.base",
+    ],
     # Author(s)
     author=["Simon Stier", "Lukas Gold"],
     # List the full page titles of the pages to be included in the package
