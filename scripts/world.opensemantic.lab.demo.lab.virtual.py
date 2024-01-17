@@ -26,15 +26,15 @@ package_meta_data = WorldMeta(
     # You can include a comment in the same line, stating the page label
     page_titles=[
         "Category:OSW553f78cc66194ae1873241207b906c4b",  # BattmoModel
-        "Item:OSWe7c08b2300f04d0bbb0a55bca8838437", # BattmoSimulation
-        "Item:OSWb80747f1ccf340d790955572d27f678c", # BattmoAtinaryOptimization,
-        "Category:OSW72eae3c8f41f4a22a94dbc01974ed404", # PrefectFlow
-        "Item:OSW491b595f6a024205845bcdf82e6eff79", # BattmoSimulationFlow,
-        "Item:OSWff7a28d9e90c4a2d8566d9e95313abb3", # BattmoAtinaryOptimizationFlow,
-        "Item:OSWb3f78502f5bf4aea91819131e30e5d69", # BattmoVM
-        "Item:OSW7e0717f191304b4cacc927ea38ee828f", # BigMapArchivePublisherFlow
-        "Item:OSWba3abe8b955a4879bd74fa21834c2e1d", # BigMapArchivePublisher
-        "Property:HasEnergyDensity"
+        "Item:OSWe7c08b2300f04d0bbb0a55bca8838437",  # BattmoSimulation
+        "Item:OSWb80747f1ccf340d790955572d27f678c",  # BattmoAtinaryOptimization,
+        "Category:OSW72eae3c8f41f4a22a94dbc01974ed404",  # PrefectFlow
+        "Item:OSW491b595f6a024205845bcdf82e6eff79",  # BattmoSimulationFlow,
+        "Item:OSWff7a28d9e90c4a2d8566d9e95313abb3",  # BattmoAtinaryOptimizationFlow,
+        "Item:OSWb3f78502f5bf4aea91819131e30e5d69",  # BattmoVM
+        "Item:OSW7e0717f191304b4cacc927ea38ee828f",  # BigMapArchivePublisherFlow
+        "Item:OSWba3abe8b955a4879bd74fa21834c2e1d",  # BigMapArchivePublisher
+        "Property:HasEnergyDensity",
     ],
 )
 # Provide the information needed (only) to create the page package
