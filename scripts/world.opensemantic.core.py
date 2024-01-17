@@ -26,6 +26,8 @@ package_meta_data = WorldMeta(
         "ExternalData",
         "WikiMarkdown"
     ],
+    # Specify the required PagePackages
+    requiredPackages=[],
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Andreas Räder"],
     # List the full page titles of the pages to be included in the package

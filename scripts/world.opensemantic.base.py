@@ -18,6 +18,10 @@ package_meta_data = WorldMeta(
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
     version="0.17.13",
+    # Specify the required PagePackages
+    requiredPackages=[
+        "world.opensemantic.core",
+    ],
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol"],
     # List the full page titles of the pages to be included in the package
