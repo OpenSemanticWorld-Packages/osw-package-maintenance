@@ -10,3 +10,5 @@ e. g.
 git submodule add https://github.com/OpenSemanticWorld-Packages/world.opensemantic.core packages/world.opensemantic.core
 ```
 
+## Contribute
+To contribute to this repository, please fork it and create a pull request.
