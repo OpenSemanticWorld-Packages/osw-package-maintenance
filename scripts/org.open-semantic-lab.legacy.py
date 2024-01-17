@@ -370,10 +370,12 @@ package_creation_config = OslCreat(
     / "packages"
     / package_meta_data.repo,
 )
-# Create the page package
-package_meta_data.create(
-    creation_config=package_creation_config,
-)
+
+if __name__ == "__main__":
+    # Create the page package
+    package_meta_data.create(
+        creation_config=package_creation_config,
+    )
 
 # Todo: check if the following deviating lines are needed:
 # baseURL = f"https://raw.githubusercontent.com/{package_repo_org}/{package_repo}/main/{package_name}",
