@@ -23,6 +23,7 @@ package_meta_data = WorldMeta(
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
+        "world.opensemantic.lab"
     ],
     # Author(s)
     author=["Simon Stier", "Lukas Gold"],

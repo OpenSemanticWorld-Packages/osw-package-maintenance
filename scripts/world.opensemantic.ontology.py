@@ -19,7 +19,9 @@ package_meta_data = WorldMeta(
     # Specify the package version - use semantic versioning
     version="0.5.0",
     # Specify the required PagePackages
-    requiredPackages=[],
+    requiredPackages=[
+        "world.opensemantic.core",
+    ],
     # Author(s)
     author=["Simon Stier"],
     # List the full page titles of the pages to be included in the package
