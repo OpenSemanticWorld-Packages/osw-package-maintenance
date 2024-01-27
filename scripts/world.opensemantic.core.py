@@ -44,6 +44,7 @@ package_meta_data = WorldMeta(
         "Category:Category",
         "Category:Entity",
         "Category:Item",
+        "Category:Term",
         "Category:OSW2ac4493f8635481eaf1db961b63c8325",  # Data
         "Category:OSWff333fd349af4f65a69100405a9e60c7",  # File
         "Category:OSW3e3f5dd4f71842fbb8f270e511af8031",  # LocalFile
@@ -75,6 +76,7 @@ package_meta_data = WorldMeta(
         "Category:OSW69f251a900944602a08d1cca830249b5",  # SubQuantityProperty
         "Property:IsA",
         "Property:HasType",
+        "Property:Display_title_of",
         "Property:SubClassOf",
         "Property:HasUuid",
         "Property:HasName",
