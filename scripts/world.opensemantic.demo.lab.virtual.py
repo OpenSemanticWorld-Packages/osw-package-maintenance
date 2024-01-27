@@ -52,3 +52,15 @@ if __name__ == "__main__":
     package_meta_data.create(
         creation_config=package_creation_config,
     )
+    # Check if all required pages are present
+    package_meta_data.check_required_pages(
+        params=WorldMeta.CheckRequiredPagesParams(
+            creation_config=package_creation_config,
+            # Enable the following line to use the package creation script for the
+            #  check of listed pages in the requiredPackages instead of the
+            #  package.json (which is only up-to-date after the execution of the
+            #  package creation script)
+            read_listed_pages_from_script=True,
+            script_dir=Path(__file__).parent,
+        )
+    )
