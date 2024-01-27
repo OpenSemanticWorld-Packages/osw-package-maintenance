@@ -48,8 +48,9 @@ if __name__ == "__main__":
             params=PagePackageController.CheckRequiredPagesParams(
                 creation_config=package_script_info["package_creation_config"],
                 # Enable the following line to use the package creation script for the
-                #  check instead of the package.json (which is only up-to-date after
-                #  the execution of the package creation script)
+                #  check of listed pages in the requiredPackages instead of the
+                #  package.json (which is only up-to-date after the execution of the
+                #  package creation script)
                 read_listed_pages_from_script=False,
                 script_dir=package_script_info["package_creation_script_fp"].parent,
             )
