@@ -21,11 +21,9 @@ package_meta_data = WorldMeta(
     # Specify the package version - use semantic versioning
     version="0.30.0",
     # Specify the required MediaWiki extensions
-    requiredExtensions=[
-        "OpenSemanticLab",
-        "ExternalData",
-        "WikiMarkdown"
-    ],
+    requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
+    # Specify the required PagePackages
+    requiredPackages=[],
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Andreas Räder"],
     # List the full page titles of the pages to be included in the package
@@ -46,26 +44,28 @@ package_meta_data = WorldMeta(
         "Category:Category",
         "Category:Entity",
         "Category:Item",
+        "Category:Term",
         "Category:OSW2ac4493f8635481eaf1db961b63c8325",  # Data
         "Category:OSWff333fd349af4f65a69100405a9e60c7",  # File
-        "Category:OSW3e3f5dd4f71842fbb8f270e511af8031", # LocalFile
-        "Category:OSW05b244d0a669436e96fe4e1631d5a171", # RemoteFile
+        "Category:OSW3e3f5dd4f71842fbb8f270e511af8031",  # LocalFile
+        "Category:OSW05b244d0a669436e96fe4e1631d5a171",  # RemoteFile
         "Category:OSW11a53cdfbdc24524bf8ac435cbf65d9d",  # WikiFile
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
-        "Category:OSWc5d4829ed2744a219ba027171c75fa1d", # Task
-        "Category:OSWcbb09a36336740c6a2cd62db9bf647ec", # IntangibleItem
+        "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task
+        "Category:OSWcbb09a36336740c6a2cd62db9bf647ec",  # IntangibleItem
         "Category:OSWa5812d3b5119416c8da1606cbe7054eb",  # DefinedTerm (moved from base)
-        "Category:OSW09f6cdd54bc54de786eafced5f675cbe", # Keyword
-        "Category:OSWd02741381aaa4709ae0753a0edc341ce", # Enumeration
-        "Category:OSW2c32802be59040248c85eda3479d484c", # StatusEnumeration
-        "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4", # TaskStatus (required for Task/Kanban Board)
+        "Category:OSW09f6cdd54bc54de786eafced5f675cbe",  # Keyword
+        "Category:OSWd02741381aaa4709ae0753a0edc341ce",  # Enumeration
+        "Category:OSW2c32802be59040248c85eda3479d484c",  # StatusEnumeration
+        "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4",  # TaskStatus (required for
+        # Task/Kanban Board)
         "Item:OSWf474ec34b7df451ea8356134241aef8a",  # State:Done
         "Item:OSWa2b4567ad4874ea1b9adfed19a3d06d1",  # State:In work
         "Item:OSWaa8d29404288446a9f3ec7afa4e2a512",  # State:To do
-        "Category:OSW65c8449bdd4f4fbcb7f68203a11d6e8f", # Priority (required for Task/Kanban Board)
-        "Item:OSW8743c7d03c4e46c1bd42bb05e1a082d9", # High
-        "Item:OSW8d781c35212548fa9b2fccad3765da65", # Medium
-        "Item:OSWcaf7db070ad6407babc5245e84d76840", # Low
+        "Category:OSW65c8449bdd4f4fbcb7f68203a11d6e8f",  # Priority
+        "Item:OSW8743c7d03c4e46c1bd42bb05e1a082d9",  # High
+        "Item:OSW8d781c35212548fa9b2fccad3765da65",  # Medium
+        "Item:OSWcaf7db070ad6407babc5245e84d76840",  # Low
         "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool
         "Category:Property",
         "Category:AnnotationProperty",
@@ -76,6 +76,7 @@ package_meta_data = WorldMeta(
         "Category:OSW69f251a900944602a08d1cca830249b5",  # SubQuantityProperty
         "Property:IsA",
         "Property:HasType",
+        "Property:Display_title_of",
         "Property:SubClassOf",
         "Property:HasUuid",
         "Property:HasName",
@@ -90,7 +91,7 @@ package_meta_data = WorldMeta(
         "Property:HasEndDate",
         "Property:HasEndDateAndTime",
         "Property:HasUnitSymbol",
-        #"Property:HasTypicalProcess", # used by tool
+        # "Property:HasTypicalProcess",  # used by tool
         "Template:Helper/UI/Tiles/Grid",
         "Template:Helper/UI/Tiles/Tile",
         "Template:Helper/UI/VE/Hidden",
@@ -108,10 +109,10 @@ package_meta_data = WorldMeta(
         "Template:Editor/Kanban",
         "Template:Viewer/Kekule",
         "Template:Viewer/Github/Code",
-        "Module:Viewer/Github", # requires Extension:ExternalData, Extension:WikiMarkdown
+        "Module:Viewer/Github",  # requires Extension:ExternalData, Extension:WikiMarkdown
         "Template:Viewer/Link",
         "Template:Viewer/Media",
-        "Template:Viewer/File", # to display files in tables
+        "Template:Viewer/File",  # to display files in tables
         "Module:Media",
     ],
 )
@@ -122,7 +123,21 @@ package_creation_config = WorldCreat(
     / "packages"
     / package_meta_data.repo,
 )
-# Create the page package
-package_meta_data.create(
-    creation_config=package_creation_config,
-)
+
+if __name__ == "__main__":
+    # Create the page package
+    package_meta_data.create(
+        creation_config=package_creation_config,
+    )
+    # Check if all required pages are present
+    package_meta_data.check_required_pages(
+        params=WorldMeta.CheckRequiredPagesParams(
+            creation_config=package_creation_config,
+            # Enable the following line to use the package creation script for the
+            #  check of listed pages in the requiredPackages instead of the
+            #  package.json (which is only up-to-date after the execution of the
+            #  package creation script)
+            read_listed_pages_from_script=True,
+            script_dir=Path(__file__).parent,
+        )
+    )

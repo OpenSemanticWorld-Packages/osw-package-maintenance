@@ -18,12 +18,15 @@ package_meta_data = WorldMeta(
     description=("For material science, etc."),
     # Specify the package version - use semantic versioning
     version="0.3.1",
+    # Specify the required PagePackages
+    requiredPackages=[
+        "world.opensemantic.base",
+    ],
     # Author(s)
     author=["Simon Stier"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
-
         "Category:OSW31ca9a739cb24079b36824045c0832aa",  # Material
         "Category:OSW0583b134c618484c9911a3dff145c7eb",  # ChemicalCompound
         "Category:OSW88894b63a51d46b08b5b4b05a6b1b3c3",  # Sample
@@ -40,7 +43,7 @@ package_meta_data = WorldMeta(
         "Property:HasVolumetricMonetaryValue",
         "Property:HasPricePerVolume",
         "Property:HasPerUnitMonetaryValue",
-        "Property:HasPricePerUnit"
+        "Property:HasPricePerUnit",
     ],
 )
 # Provide the information needed (only) to create the page package
@@ -50,7 +53,21 @@ package_creation_config = WorldCreat(
     / "packages"
     / package_meta_data.repo,
 )
-# Create the page package
-package_meta_data.create(
-    creation_config=package_creation_config,
-)
+
+if __name__ == "__main__":
+    # Create the page package
+    package_meta_data.create(
+        creation_config=package_creation_config,
+    )
+    # Check if all required pages are present
+    package_meta_data.check_required_pages(
+        params=WorldMeta.CheckRequiredPagesParams(
+            creation_config=package_creation_config,
+            # Enable the following line to use the package creation script for the
+            #  check of listed pages in the requiredPackages instead of the
+            #  package.json (which is only up-to-date after the execution of the
+            #  package creation script)
+            read_listed_pages_from_script=True,
+            script_dir=Path(__file__).parent,
+        )
+    )

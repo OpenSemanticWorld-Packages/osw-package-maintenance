@@ -18,6 +18,8 @@ package_meta_data = OslMeta(
     description=("Provides core functionalities of OpenSemanticLab < 0.2.0"),
     # Specify the package version - use semantic versioning
     version="0.1.0",
+    # Specify the required PagePackages
+    requiredPackages=[],
     # Author(s)
     author=["Simon Stier"],
     # List the full page titles of the pages to be included in the package
@@ -173,10 +175,12 @@ package_creation_config = OslCreat(
     / "packages"
     / package_meta_data.repo,
 )
-# Create the page package
-package_meta_data.create(
-    creation_config=package_creation_config,
-)
+
+if __name__ == "__main__":
+    # Create the page package
+    package_meta_data.create(
+        creation_config=package_creation_config,
+    )
 
 
 # todo: check if the following deviating lines are needed:

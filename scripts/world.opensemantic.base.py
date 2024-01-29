@@ -18,12 +18,16 @@ package_meta_data = WorldMeta(
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
     version="0.17.13",
+    # Specify the required PagePackages
+    requiredPackages=[
+        "world.opensemantic.core",
+    ],
     # Author(s)
     author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
-        #"Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # PhysicalItem
+        # "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # PhysicalItem
         "Category:OSW92cc6b1a2e6b4bb7bad470dfdcfdaf26",  # Article
         "Category:OSW494f660e6a714a1a9681c517bbb975da",  # Tutorial
         "Category:OSW0e084decca6f48a7b023d6b7b2c1452d",  # Event
@@ -63,32 +67,32 @@ package_meta_data = WorldMeta(
         "Category:OSW5427361692374c8eaa6bd3733b92d343",  # Institute
         "Category:OSW5efde23b1d8c4e1c864ef039cb0616ed",  # PersonRole
         "Category:OSW07a0faef5be94b788514a2dd5dca20bf",  # BuildingFunction
-        "Category:OSW973a5cd08ea14524a57089f0b3c9c6ff", # Requirement
-        "Item:OSWab093fd8af104a49882704cea3bbaf7b", # FunctionalRequirement
-        "Item:OSWbb07a72940554b1b978c44e5db4bd314", # NonFunctionalRequirement
+        "Category:OSW973a5cd08ea14524a57089f0b3c9c6ff",  # Requirement
+        "Item:OSWab093fd8af104a49882704cea3bbaf7b",  # FunctionalRequirement
+        "Item:OSWbb07a72940554b1b978c44e5db4bd314",  # NonFunctionalRequirement
         "Template:Editor/Requirements",
         "Property:HasId",
         "Property:IsRelatedTo",
         "Property:HasPhoneNumber",
-        "Property:HasApprover", 
-        "Property:HasOrderer", 
+        "Property:HasApprover",
+        "Property:HasOrderer",
         "Property:HasContact",
         "Property:HasUrl",
         "Property:HasVersion",
         "Property:HasManufacturer",
         "Property:HasManual",
-        #"Property:HasPurpose",
+        # "Property:HasPurpose",
         "Property:HasResponsiblePerson",
         "Property:IsLocatedIn",
         "Property:HasDepartment",
-        #"Property:HasDatabase",
+        # "Property:HasDatabase",
         "Property:HasInventoryNumber",
-        #"Property:HasMeasurementChannels",
+        # "Property:HasMeasurementChannels",
         "Property:HasRiskAssessment",
         "Property:HasOwner",
         "Property:HasSerialNumber",
         "Property:HasNetworkDomain",
-        "Property:HasIp4Address"
+        "Property:HasIp4Address",
     ],
 )
 # Provide the information needed (only) to create the page package
@@ -98,7 +102,21 @@ package_creation_config = WorldCreat(
     / "packages"
     / package_meta_data.repo,
 )
-# Create the page package
-package_meta_data.create(
-    creation_config=package_creation_config,
-)
+
+if __name__ == "__main__":
+    # Create the page package
+    package_meta_data.create(
+        creation_config=package_creation_config,
+    )
+    # Check if all required pages are present
+    package_meta_data.check_required_pages(
+        params=WorldMeta.CheckRequiredPagesParams(
+            creation_config=package_creation_config,
+            # Enable the following line to use the package creation script for the
+            #  check of listed pages in the requiredPackages instead of the
+            #  package.json (which is only up-to-date after the execution of the
+            #  package creation script)
+            read_listed_pages_from_script=True,
+            script_dir=Path(__file__).parent,
+        )
+    )
