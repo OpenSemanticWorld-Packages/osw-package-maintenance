@@ -47,3 +47,11 @@ class OslCreat(Package.CreationConfig):
     domain = "wiki-dev.open-semantic-lab.org"
     credentials_file_path: Optional[FilePath] = DEFAULT_CREDENTIALS_FILE_PATH
     skip_slot_suffix_for_main = True
+
+
+class BigMapCreat(Package.CreationConfig):
+    """Creation config for the org.open-semantic-lab page packages"""
+
+    domain = "osl-sandbox.big-map.eu"
+    credentials_file_path: Optional[FilePath] = DEFAULT_CREDENTIALS_FILE_PATH
+    skip_slot_suffix_for_main = True
