@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.17.13",
+    version="0.18.1",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -32,7 +32,6 @@ package_meta_data = WorldMeta(
         "Category:OSW494f660e6a714a1a9681c517bbb975da",  # Tutorial
         "Category:OSW0e084decca6f48a7b023d6b7b2c1452d",  # Event
         "Category:OSW81e9e22e7d934382a6a56df7d3736957",  # Recipe
-        "Category:OSWa5812d3b5119416c8da1606cbe7054eb",  # Term
         "Category:OSWfe72974590fd4e8ba94cd4e8366375e8",  # DataSet
         "Category:OSW3d238d05316e45a4ac95a11d7b24e36b",  # Location
         "Category:OSWd845b96813a344458f140e48c4d063fd",  # MetaDeviceCategory
