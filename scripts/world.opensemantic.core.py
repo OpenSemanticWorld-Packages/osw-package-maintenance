@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.30.1",
+    version="0.30.2",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -87,6 +87,8 @@ package_meta_data = WorldMeta(
         "Property:HasImage",
         "Property:HasDate",
         "Property:HasStartDate",
+        "Property:Corresponds to",
+        "Property:Visible to",
         "Property:HasStartDateAndTime",
         "Property:HasEndDate",
         "Property:HasEndDateAndTime",
