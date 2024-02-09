@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.19.0",
+    version="0.20.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -35,6 +35,7 @@ package_meta_data = WorldMeta(
         "Category:OSW81e9e22e7d934382a6a56df7d3736957",  # Recipe
         "Category:OSWfe72974590fd4e8ba94cd4e8366375e8",  # DataSet
         "Category:OSW3d238d05316e45a4ac95a11d7b24e36b",  # Location
+        "Category:OSW28f71f2c20ad48c38c4e4d190a95c0b8",  # Place
         "Category:OSW473d7a1ed48544d1be83b258b5810948",  # Site
         "Category:OSW4bcd4a99a73f482ea40ac4210dfab836",  # Building
         "Category:OSW6c4212f1a39342be963d2b9efd19c5c2",  # Floor
@@ -61,11 +62,14 @@ package_meta_data = WorldMeta(
         "Category:OSWac9f0e49d8024804bd7d77058322a3fe",  # RoomUsage
         "Category:OSWae92be81cdb34d22844d4791ef790d93",  # AreaUsageType
         "Category:OSW44deaa5b806d41a2a88594f562b110e9",  # Person
+        "Category:OSW90640829797c4b859548a796f8f6dca6",  # ExternalPerson
         "Category:OSWd9aa0bca9b0040d8af6f5c091bf9eec7",  # User
         "Category:OSW3cb8cef2225e403092f098f99bc4c472",  # OrganizationalUnit
         "Category:OSW1969007d5acf40539642877659a02c23",  # Organization
         "Category:OSW9d63242855e44ab8b26d6ad9792a67b3",  # Educational Organization
+        "Category:OSW41ff0ef9d7cf4134bccf5bbbf1976f73",  # GovernmentOrganization
         "Category:OSWcffdc90247c142eca7f23ab6c69e49a1",  # NonGovernmentalOrganization
+        "Category:OSW789dcd084860478dbc60361a2da7c823",  # ResearchOrganization
         "Category:OSWd9521d3054814dd29c2bcdbd9185d1f0",  # Association
         "Category:OSW5f4a3751d23e482d80fb0b72dcd6bc31",  # Corporation
         "Category:OSWd7085ef89b0e4a69ac4f2d28bda2d2c0",  # Foundation
