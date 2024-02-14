@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.30.3",
+    version="0.31.0",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -53,6 +53,7 @@ package_meta_data = WorldMeta(
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
         "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task
         "Category:OSWcbb09a36336740c6a2cd62db9bf647ec",  # IntangibleItem
+        "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # Physical Item
         "Category:OSWa5812d3b5119416c8da1606cbe7054eb",  # DefinedTerm (moved from base)
         "Category:OSW09f6cdd54bc54de786eafced5f675cbe",  # Keyword
         "Category:OSWd02741381aaa4709ae0753a0edc341ce",  # Enumeration
