@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.31.0",
+    version="0.31.5",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -75,6 +75,7 @@ package_meta_data = WorldMeta(
         "Category:QuantityProperty",
         "Category:OSW1b15ddcf042c4599bd9d431cbfdf3430",  # MainQuantityProperty
         "Category:OSW69f251a900944602a08d1cca830249b5",  # SubQuantityProperty
+        # Entity and Category
         "Property:IsA",
         "Property:HasType",
         "Property:Display_title_of",
@@ -84,16 +85,23 @@ package_meta_data = WorldMeta(
         "Property:HasLabel",
         "Property:Display title of lowercase",
         "Property:Display title of normalized",
+        #"Property:HasAbbreviation", #ToDo: Multilang?
         "Property:HasDescription",
         "Property:HasImage",
+        "Property:HasFileAttachment",
+        # Statements
+        "Property:HasUnitSymbol",
+        "Property:Corresponds to",
+        # Process
         "Property:HasDate",
         "Property:HasStartDate",
-        "Property:Corresponds to",
-        "Property:Visible to",
         "Property:HasStartDateAndTime",
         "Property:HasEndDate",
         "Property:HasEndDateAndTime",
-        "Property:HasUnitSymbol",
+        "Property:HasInput",
+        "Property:HasOutput",
+        # Item
+        "Property:Visible to",
         # "Property:HasTypicalProcess",  # used by tool
         "Template:Helper/UI/Tiles/Grid",
         "Template:Helper/UI/Tiles/Tile",
