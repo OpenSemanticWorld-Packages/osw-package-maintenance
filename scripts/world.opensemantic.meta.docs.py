@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides core documentation of OpenSemanticWorld / -Lab"),
     # Specify the package version - use semantic versioning
-    version="0.7.0",
+    version="0.7.1",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
