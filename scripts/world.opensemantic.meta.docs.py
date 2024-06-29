@@ -23,7 +23,7 @@ package_meta_data = WorldMeta(
         "world.opensemantic.base",
     ],
     # Author(s)
-    author=["Simon Stier", "Lukas Gold", "Andeas Räder"],
+    author=["Simon Stier", "Lukas Gold", "Andreas Räder"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
