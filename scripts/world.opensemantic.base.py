@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.20.6",
+    version="0.22.2",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -54,7 +54,6 @@ package_meta_data = WorldMeta(
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
         "Category:OSW8c56fd1e858f499da801691c5f2b7309",  # WebService
         "Category:OSWb2d7e6a2eff94c82b7f1f2699d5b0ee3",  # Project
-        "Category:OSW490e38f9764f4408a244869a0ea98e7c",  # Project (Application) Status
         "Category:OSW595b282aedf048788f3ee326454792ce",  # Budget Type
         "Category:OSW25bc4daf97644737a76434b88e1d5b21",  # Grant
         "Category:OSWbe80b28aefd64921ba2e8e2d6225416e",  # Monetary Grant
@@ -88,7 +87,19 @@ package_meta_data = WorldMeta(
         "Category:OSW973a5cd08ea14524a57089f0b3c9c6ff",  # Requirement
         "Item:OSWab093fd8af104a49882704cea3bbaf7b",  # FunctionalRequirement
         "Item:OSWbb07a72940554b1b978c44e5db4bd314",  # NonFunctionalRequirement
-        "Item:OSW55a9a9bda7b248759e48ae2e3ed6df1d",  # Ongoing
+        "Category:OSW490e38f9764f4408a244869a0ea98e7c",  # Project (Application) Status
+        "Item:OSW03a4ea630fa74256bce1d5cba21dece6",	 # Complete
+        "Item:OSW09d664922ada4e5ea2e2282b926f6a3a",	 # SubmittedDraftApplication
+        "Item:OSW0f0332960dc942169866361efb64ac8a",	 # AdmittedForTheFullApplication
+        "Item:OSW205fc8dcd20646e586969cf4a0aeca65",	 # FullApplication
+        "Item:OSW33729246f7ab443faccf75ab3974f0a0",	 # Rejected
+        "Item:OSW3b8775e87e84421daa886ec88296c21d",	 # SubmittedFullProposal
+        "Item:OSW55a9a9bda7b248759e48ae2e3ed6df1d",	 # Ongoing
+        "Item:OSW8e711e4aa6d94c5c88693ff26b50f4dc",	 # Accepted
+        "Item:OSWebf0f1e63ed74546b9b10caaeef2538d",	 # Prolonged
+        "Item:OSWffdf176672f34e44bb295d4285817f7d",	 # DraftProposal
+        "Item:OSWa387769a552a4f128cf51a57979d226b",  # Aborted
+        "Item:OSWb777cbfaf4494138b4ed40d15c53f8a4",  # Discontinued
         "Template:Editor/Requirements",
         "Property:HasId",
         "Property:IsRelatedTo",
