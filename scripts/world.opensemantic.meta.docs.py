@@ -66,7 +66,7 @@ if __name__ == "__main__":
             #  check of listed pages in the requiredPackages instead of the
             #  package.json (which is only up-to-date after the execution of the
             #  package creation script)
-            read_listed_pages_from_script=True,
-            script_dir=Path(__file__).parent,
+            # read_listed_pages_from_script=True,
+            # script_dir=Path(__file__).parent,
         )
     )
