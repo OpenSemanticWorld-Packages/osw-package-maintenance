@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.23.0",
+    version="0.24.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -27,6 +27,7 @@ package_meta_data = WorldMeta(
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
+        "JsonSchema:PostalAddress",
         "Category:OSW712583f2479944deb2546b77cf860dda",  # Creative Work
         "Category:OSW92cc6b1a2e6b4bb7bad470dfdcfdaf26",  # Article
         "Category:OSWe2c50b1034684c1b9a5c21ad371d6381",  # How To
@@ -53,6 +54,8 @@ package_meta_data = WorldMeta(
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
         "Category:OSW8c56fd1e858f499da801691c5f2b7309",  # WebService
+        "Category:OSW72eae3c8f41f4a22a94dbc01974ed404",  # PrefectFlow
+        "JsonSchema:PrefectWorkflowRuns",                # PrefectWorkflowRuns
         "Category:OSWb2d7e6a2eff94c82b7f1f2699d5b0ee3",  # Project
         "Category:OSW595b282aedf048788f3ee326454792ce",  # Budget Type
         "Category:OSW25bc4daf97644737a76434b88e1d5b21",  # Grant
@@ -120,7 +123,6 @@ package_meta_data = WorldMeta(
         # "Property:HasMeasurementChannels",
         "Property:HasRiskAssessment",
         "Property:HasOwner",
-        "Property:HasSerialNumber",
         "Property:HasNetworkDomain",
         "Property:HasIp4Address",
     ],

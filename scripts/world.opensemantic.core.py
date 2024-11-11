@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.39.2",
+    version="0.41.0",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -41,8 +41,6 @@ package_meta_data = WorldMeta(
         "JsonSchema:Description",
         "JsonSchema:Statement",
         "JsonSchema:Meta",
-        "JsonSchema:PostalAddress",
-        "JsonSchema:Offer",
         "JsonSchema:SerialNumber",
         "Category:Category",
         "Category:Entity",
@@ -127,10 +125,12 @@ package_meta_data = WorldMeta(
         "Template:Viewer/Github/Code",
         "Module:Viewer/Github",  # requires Extension:ExternalData, Extension:WikiMarkdown
         "Template:Viewer/Link",
+        "Module:Viewer/Link",
         "Template:Viewer/LinkAndEditButton",
         "Template:Viewer/Media",
         "Template:Viewer/File",  # to display files in tables
-        "Module:Media",
+        "Module:Media",  # Note: refs some PNG files as examples, these should not be included
+        "Template:Viewer/QuickEditButton",  # inline edit in tables
     ],
 )
 # Provide the information needed (only) to create the page package
@@ -139,6 +139,11 @@ package_creation_config = WorldCreat(
     working_dir=Path(__file__).parents[1]
     / "packages"
     / package_meta_data.repo,
+    ignore_titles=[
+        'File:OSWd8adafab997746e69864f23e7bfba734.png',  # example/test file
+        'File:OSW5f36a59d4bb94ea0bf93f08f7470f609.png',  # example/test file
+        'File:OSWd1c24f1c4b014ebe99c2a83672e3dfc7.png',  # example/test file
+    ],
 )
 
 if __name__ == "__main__":
@@ -154,7 +159,7 @@ if __name__ == "__main__":
             #  check of listed pages in the requiredPackages instead of the
             #  package.json (which is only up-to-date after the execution of the
             #  package creation script)
-            read_listed_pages_from_script=True,
-            script_dir=Path(__file__).parent,
+            #  read_listed_pages_from_script=True,
+            #  script_dir=Path(__file__).parent,
         )
     )
