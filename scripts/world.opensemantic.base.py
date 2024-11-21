@@ -125,6 +125,7 @@ package_meta_data = WorldMeta(
         "Property:HasOwner",
         "Property:HasNetworkDomain",
         "Property:HasIp4Address",
+        "Property:HasPostalAddress",
     ],
 )
 # Provide the information needed (only) to create the page package
