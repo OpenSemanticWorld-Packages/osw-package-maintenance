@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.41.0",
+    version="0.42.0",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -136,13 +136,11 @@ package_meta_data = WorldMeta(
 # Provide the information needed (only) to create the page package
 package_creation_config = WorldCreat(
     # Specify the path to the working directory - where the package is stored on disk
-    working_dir=Path(__file__).parents[1]
-    / "packages"
-    / package_meta_data.repo,
+    working_dir=Path(__file__).parents[1] / "packages" / package_meta_data.repo,
     ignore_titles=[
-        'File:OSWd8adafab997746e69864f23e7bfba734.png',  # example/test file
-        'File:OSW5f36a59d4bb94ea0bf93f08f7470f609.png',  # example/test file
-        'File:OSWd1c24f1c4b014ebe99c2a83672e3dfc7.png',  # example/test file
+        "File:OSWd8adafab997746e69864f23e7bfba734.png",  # example/test file
+        "File:OSW5f36a59d4bb94ea0bf93f08f7470f609.png",  # example/test file
+        "File:OSWd1c24f1c4b014ebe99c2a83672e3dfc7.png",  # example/test file
     ],
 )
 
