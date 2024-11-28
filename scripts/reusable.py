@@ -4,8 +4,7 @@ from typing import Optional
 from osw.controller.page_package import PagePackageController as Package
 from pydantic import FilePath
 
-
-DEFAULT_CREDENTIALS_FILE_PATH = Path(__file__).parent / "accounts.pwd.yaml"
+CRED_FILEPATH_DEFAULT = Path(__file__).parent / "accounts.pwd.yaml"
 
 
 class WorldMeta(Package):
@@ -29,7 +28,7 @@ class WorldCreat(Package.CreationConfig):
     """Creation config for the world.opensemantic page packages"""
 
     domain = "wiki-dev.open-semantic-lab.org"
-    credentials_file_path: Optional[FilePath] = DEFAULT_CREDENTIALS_FILE_PATH
+    cred_filepath: Optional[FilePath] = CRED_FILEPATH_DEFAULT
     # working_dir: is required but not provided here -> needs to be set in each script
 
 
@@ -45,7 +44,7 @@ class OslCreat(Package.CreationConfig):
     """Creation config for the org.open-semantic-lab page packages"""
 
     domain = "wiki-dev.open-semantic-lab.org"
-    credentials_file_path: Optional[FilePath] = DEFAULT_CREDENTIALS_FILE_PATH
+    cred_filepath: Optional[FilePath] = CRED_FILEPATH_DEFAULT
     skip_slot_suffix_for_main = True
 
 
@@ -53,5 +52,5 @@ class BigMapCreat(Package.CreationConfig):
     """Creation config for the org.open-semantic-lab page packages"""
 
     domain = "osl-sandbox.big-map.eu"
-    credentials_file_path: Optional[FilePath] = DEFAULT_CREDENTIALS_FILE_PATH
+    cred_filepath: Optional[FilePath] = CRED_FILEPATH_DEFAULT
     skip_slot_suffix_for_main = True
