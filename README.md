@@ -41,10 +41,22 @@ classDiagram
     class ontology
     link ontology "https://github.com/OpenSemanticWorld-Packages/world.opensemantic.ontology" "world.opensemantic.ontology"
 
+    class core_mediawiki
+    link core_mediawiki "https://github.com/OpenSemanticWorld-Packages/world.opensemantic.core.mediawiki" "world.opensemantic.core.mediawiki"
+
+    class characteristics_basic
+    link characteristics_basic "https://github.com/OpenSemanticWorld-Packages/world.opensemantic.characteristics.basic" "world.opensemantic.characteristics.basic"
+    class quantities
+    link quantities "https://github.com/OpenSemanticWorld-Packages/world.opensemantic.quantities" "world.opensemantic.quantities"
+    class characteristics_quantitative
+    link characteristics_quantitative "https://github.com/OpenSemanticWorld-Packages/world.opensemantic.characteristics.quantitative" "world.opensemantic.characteristics.quantitative"
+
+
     %% Define dependencies here
     %% Inheritance is used to model the "requiredPackage" relation
     %% Order the inheriting packages alphabetically
     core        <|-- base
+    core        <|-- core_mediawiki
     base        <|-- batteries
     lab         <|-- batteries
     lab         <|-- demo
@@ -53,6 +65,9 @@ classDiagram
     lab         <|-- lab_virtual
     base        <|-- meta_docs
     core        <|-- ontology
+    core        <|-- characteristics_basic
+    characteristics_basic        <|-- quantities
+    quantities  <|-- characteristics_quantitative
 ```
 
 ## Contribute

@@ -29,3 +29,15 @@
 [submodule "packages/world.opensemantic.batteries"]
 	path = packages/world.opensemantic.batteries
 	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.batteries.git
+[submodule "packages/world.opensemantic.quantities"]
+	path = packages/world.opensemantic.quantities
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.quantities
+[submodule "tools/quantities-units"]
+	path = tools/quantities-units
+	url = https://github.com/opensemanticworld/quantities-units
+[submodule "packages/world.opensemantic.characteristics.basic"]
+	path = packages/world.opensemantic.characteristics.basic
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.characteristics.basic
+[submodule "packages/world.opensemantic.characteristics.quantitative"]
+	path = packages/world.opensemantic.characteristics.quantitative
+	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.characteristics.quantitative
