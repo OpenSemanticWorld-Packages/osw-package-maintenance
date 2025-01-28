@@ -41,3 +41,6 @@
 [submodule "packages/world.opensemantic.characteristics.quantitative"]
 	path = packages/world.opensemantic.characteristics.quantitative
 	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.characteristics.quantitative
+[submodule "python_packages/opensemantic.quantities"]
+	path = python_packages/opensemantic.quantities
+	url = https://github.com/OpenSemanticLab/opensemantic.quantities.git
