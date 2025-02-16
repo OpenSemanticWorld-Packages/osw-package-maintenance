@@ -17,13 +17,13 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.25.0",
+    version="0.27.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
     ],
     # Author(s)
-    author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol"],
+    author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol", "Andreas Räder"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
@@ -32,7 +32,11 @@ package_meta_data = WorldMeta(
         "Category:OSW92cc6b1a2e6b4bb7bad470dfdcfdaf26",  # Article
         "Category:OSWe2c50b1034684c1b9a5c21ad371d6381",  # How To
         "Category:OSW494f660e6a714a1a9681c517bbb975da",  # Tutorial
-        "Category:OSW0e084decca6f48a7b023d6b7b2c1452d",  # Event
+        "Category:OSWb97757b46edb430591758662c18d354d",  # Event
+        "Category:OSW0e084decca6f48a7b023d6b7b2c1452d",  # EventWithPeople
+        "Category:OSWf62d07b325124027b82fbec0a7b852df",  # EventSeries
+        "Category:OSW5c7c84f0bfbe4347ba7fbe7b346fd106",  # Meeting
+        "Category:OSW9ed6b89cc3c7492896570951a5b094d6",  # MeetingSeries
         "Category:OSW81e9e22e7d934382a6a56df7d3736957",  # Recipe
         "Category:OSWfe72974590fd4e8ba94cd4e8366375e8",  # DataSet
         "Category:OSW3d238d05316e45a4ac95a11d7b24e36b",  # Location
@@ -98,6 +102,7 @@ package_meta_data = WorldMeta(
         "Item:OSW33729246f7ab443faccf75ab3974f0a0",  # Rejected
         "Item:OSW3b8775e87e84421daa886ec88296c21d",  # SubmittedFullProposal
         "Item:OSW55a9a9bda7b248759e48ae2e3ed6df1d",  # Ongoing
+        "Item:OSW206adb12f52e4831b10b898c31b11eac",  # Paused
         "Item:OSW8e711e4aa6d94c5c88693ff26b50f4dc",  # Accepted
         "Item:OSWebf0f1e63ed74546b9b10caaeef2538d",  # Prolonged
         "Item:OSWffdf176672f34e44bb295d4285817f7d",  # DraftProposal
