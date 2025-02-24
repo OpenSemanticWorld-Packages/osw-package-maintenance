@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.27.0",
+    version="0.28.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -28,6 +28,11 @@ package_meta_data = WorldMeta(
     # You can include a comment in the same line, stating the page label
     page_titles=[
         "JsonSchema:PostalAddress",
+        "JsonSchema:StartDate",
+        "JsonSchema:StartDateTime",
+        "JsonSchema:EndDate",
+        "JsonSchema:EndDateTime",
+        "JsonSchema:Duration",
         "Category:OSW712583f2479944deb2546b77cf860dda",  # Creative Work
         "Category:OSW92cc6b1a2e6b4bb7bad470dfdcfdaf26",  # Article
         "Category:OSWe2c50b1034684c1b9a5c21ad371d6381",  # How To
