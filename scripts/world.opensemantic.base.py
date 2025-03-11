@@ -17,13 +17,19 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.28.0",
+    version="0.29.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
     ],
     # Author(s)
-    author=["Simon Stier", "Lukas Gold", "Matthias Albert Popp", "Alexander Triol", "Andreas Räder"],
+    author=[
+        "Simon Stier",
+        "Lukas Gold",
+        "Matthias Albert Popp",
+        "Alexander Triol",
+        "Andreas Räder",
+    ],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
@@ -75,6 +81,10 @@ package_meta_data = WorldMeta(
         "Category:OSW44deaa5b806d41a2a88594f562b110e9",  # Person
         "Category:OSW90640829797c4b859548a796f8f6dca6",  # ExternalPerson
         "Category:OSWd9aa0bca9b0040d8af6f5c091bf9eec7",  # User
+        "Category:OSW781ad17c7eef4161ade5a7b690aca6b5",  # EmploymentContractStatus
+        "Item:OSW62770459451644f3841c502df8a5cb1d",  # Active
+        "Item:OSWacf5f4db53264d29ae8744d03796be0b",  # Inactive
+        "Item:OSWa09571ab688e4395aa1a845234e3093b",  # Unknown
         "Category:OSW3cb8cef2225e403092f098f99bc4c472",  # OrganizationalUnit
         "Category:OSW1969007d5acf40539642877659a02c23",  # Organization
         "Category:OSW9d63242855e44ab8b26d6ad9792a67b3",  # Educational Organization
