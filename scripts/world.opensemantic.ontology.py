@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides schemas for ontology terms"),
     # Specify the package version - use semantic versioning
-    version="0.6.0",
+    version="0.7.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
