@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.44.3",
+    version="0.44.5",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -40,6 +40,7 @@ package_meta_data = WorldMeta(
         "JsonSchema:Label",
         "JsonSchema:Description",
         "JsonSchema:Statement",
+        "JsonSchema:QuantityProperty",
         "JsonSchema:Meta",
         "JsonSchema:SerialNumber",
         "Category:Category",
@@ -131,7 +132,7 @@ package_meta_data = WorldMeta(
         "Template:Viewer/Media",
         "Template:Viewer/File",  # to display files in tables
         "Module:Media",  # Note: refs some PNG files as examples, these should not be included
-        "Template:Viewer/QuickEditButton",  # inline edit in tables
+        "Template:Viewer/EditButton",  # inline edit in tables
     ],
 )
 # Provide the information needed (only) to create the page package
