@@ -1,30 +1,19 @@
-import os
-import pathlib
-import sys
-from calendar import c
+# import os
+# import pathlib
+# import sys
+# from calendar import c
 from pathlib import Path
 from typing import Dict
 
-from reusable import WorldCreat, WorldMeta
-
-sys.path.append(
-    str(
-        pathlib.Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        / "tools"
-        / "quantities-units"
-        / "src"
-        / "quantities-units"
-    )
-)
-from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite
+from osw.core import OSW, AddOverwriteClassOptions, WtPage  # , WtSite
 from osw.express import OswExpress
-from osw.utils.wiki import get_osw_id
-from quantities_units.main import (
+
+# from osw.utils.wiki import get_osw_id
+from quantities_units.main import (  # load_data,; update_local_osw,
     extract_data,
-    load_data,
     transform_data,
-    update_local_osw,
 )
+from reusable import WorldCreat, WorldMeta
 
 osw_obj = OswExpress(
     domain="wiki-dev.open-semantic-lab.org",  # cred_filepath=pwd_file_path

@@ -167,9 +167,7 @@ package_meta_data = WorldMeta(
 # Provide the information needed (only) to create the page package
 package_creation_config = WorldCreat(
     # Specify the path to the working directory - where the package is stored on disk
-    working_dir=Path(__file__).parents[1]
-    / "packages"
-    / package_meta_data.repo,
+    working_dir=Path(__file__).parents[1] / "packages" / package_meta_data.repo,
     prefer_local_pages=False,
     generate_python_code=False,
     python_code_working_dir=(
@@ -177,8 +175,9 @@ package_creation_config = WorldCreat(
         / "python_packages"
         / (package_meta_data.id.replace("world.", "") + "-python")
         / "src"
-    )
-    .joinpath(*[part for part in package_meta_data.id.replace("world.", "").split(".")])
+    ).joinpath(
+        *[part for part in package_meta_data.id.replace("world.", "").split(".")]
+    ),
 )
 
 if __name__ == "__main__":

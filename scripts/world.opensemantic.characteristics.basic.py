@@ -27,9 +27,9 @@ package_meta_data = WorldMeta(
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
-        "Category:OSW93ccae36243542ceac6c951450a81d47", # "Characteristic"
-        "Category:OSWffe74f291d354037b318c422591c5023", # "Characteristic Type"
-        "Category:OSW6ef70c808fb54abbbacb059c285713d4", # "Ontology related"
+        "Category:OSW93ccae36243542ceac6c951450a81d47",  # "Characteristic"
+        "Category:OSWffe74f291d354037b318c422591c5023",  # "Characteristic Type"
+        "Category:OSW6ef70c808fb54abbbacb059c285713d4",  # "Ontology related"
     ],
 )
 # Provide the information needed (only) to create the page package

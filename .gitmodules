@@ -62,4 +62,3 @@
 [submodule ".\\python_packages\\opensemantic.characteristics.quantitative-python"]
 	path = .\\python_packages\\opensemantic.characteristics.quantitative-python
 	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.characteristics.quantitative-python
-

@@ -1,25 +1,27 @@
 import os
-import pathlib
+
+# import pathlib
 import pickle
-import re
-import sys
+
+# import re
+# import sys
 from pathlib import Path
 from typing import Dict
 
-import osw
-
 # from osw.express import OswExpress
 from osw.auth import CredentialManager
-from osw.core import OSW, AddOverwriteClassOptions, OverwriteOptions, WtPage, WtSite
-from osw.utils.wiki import get_osw_id
-from quantities_units.main import (
+from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite  # , OverwriteOptions
+
+# from osw.utils.wiki import get_osw_id
+from quantities_units.main import (  # load_data,; update_local_osw,
     create_smw_quantity_properties,
     extract_data,
-    load_data,
     transform_data,
-    update_local_osw,
 )
 from reusable import WorldCreat, WorldMeta
+
+# import osw
+
 
 # osw_obj = OswExpress(
 #    domain="wiki-dev.open-semantic-lab.org",  # cred_filepath=pwd_file_path
