@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.30.0",
+    version="0.33.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -123,6 +123,17 @@ package_meta_data = WorldMeta(
         "Item:OSWffdf176672f34e44bb295d4285817f7d",  # DraftProposal
         "Item:OSWa387769a552a4f128cf51a57979d226b",  # Aborted
         "Item:OSWb777cbfaf4494138b4ed40d15c53f8a4",  # Discontinued
+        "Category:OSW67f2ef61ba284c919fefa00d0e95a7a0",  # ProjectType
+        "Item:OSW419d3919ede342b0a1eff4fcaad752c4",  # PublicProject
+        "Item:OSWace8fed32754463f81c1fc0758330dc2",  # IndustryProject
+        "Item:OSWc8cb4d44c80b4a2dbe6d57552a31049f",  # InternalProject
+        "Item:OSWca3477aecec644ea9575b839ad7107f2",  # HouseProject
+        "Category:OSW595b282aedf048788f3ee326454792ce",  # BudgetType
+        "Item:OSW2c8abfc3da9c4278847eda2fa977e947",  # Personnel
+        "Item:OSW3da9a6c96dbb480eaaae489d2de5ec72",  # Investment
+        "Item:OSW66e1a58fd78c468b8300bf6d75a54e68",  # Travel
+        "Item:OSWd8612de9ddfa4b19a575a0e9e7493fd0",  # Consumables
+        "Item:OSWe3a3b9119028433d883910abd9189e01",  # Other
         "Template:Editor/Requirements",
         "Property:HasId",
         "Property:IsRelatedTo",
@@ -146,6 +157,11 @@ package_meta_data = WorldMeta(
         "Property:HasNetworkDomain",
         "Property:HasIp4Address",
         "Property:HasPostalAddress",
+        "Property:HasEmail",
+        "Property:HasDimensionlessRatio",
+        "Property:HasProbabilityOfSuccessfulFunding",
+        "Property:HasBudget",
+        "Property:HasWeightedBudget",
     ],
 )
 # Provide the information needed (only) to create the page package
