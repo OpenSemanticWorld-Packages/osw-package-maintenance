@@ -40,11 +40,11 @@ for key, osw_obj_list in list_of_osw_obj_dict.items():
     meta_category_title = None
     if key == "fundamental_characteristics": 
         namespace = "Category"
-        # MetaFundamentalQuantityValue
+        # FundamentalQuantityValueType
         meta_category_title = "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7"
     if key == "characteristics": 
         namespace = "Category"
-        # MetaQuantityValue
+        # QuantityValueType
         meta_category_title = "Category:OSWac07a46c2cf14f3daec503136861f5ab"
         
     pages = {**pages, **osw_obj.store_entity(

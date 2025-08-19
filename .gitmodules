@@ -35,6 +35,15 @@
 [submodule "tools/quantities-units"]
 	path = tools/quantities-units
 	url = https://github.com/opensemanticworld/quantities-units
+[submodule "python_packages/opensemantic-python"]
+	path = python_packages/opensemantic-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic-python
+[submodule "python_packages/opensemantic.base-python"]
+	path = python_packages/opensemantic.base-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.base-python
+[submodule "python_packages/opensemantic.core-python"]
+	path = python_packages/opensemantic.core-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.core-python
 [submodule "packages/world.opensemantic.characteristics.basic"]
 	path = packages/world.opensemantic.characteristics.basic
 	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.characteristics.basic
@@ -44,3 +53,13 @@
 [submodule "python_packages/opensemantic.quantities"]
 	path = python_packages/opensemantic.quantities
 	url = https://github.com/OpenSemanticLab/opensemantic.quantities.git
+[submodule "python_packages/opensemantic.characteristics-python"]
+	path = python_packages/opensemantic.characteristics-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.characteristics-python
+[submodule "python_packages/opensemantic.characteristics.basic-python"]
+	path = python_packages/opensemantic.characteristics.basic-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.characteristics.basic-python
+[submodule ".\\python_packages\\opensemantic.characteristics.quantitative-python"]
+	path = .\\python_packages\\opensemantic.characteristics.quantitative-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.characteristics.quantitative-python
+

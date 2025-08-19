@@ -170,6 +170,15 @@ package_creation_config = WorldCreat(
     working_dir=Path(__file__).parents[1]
     / "packages"
     / package_meta_data.repo,
+    prefer_local_pages=False,
+    generate_python_code=False,
+    python_code_working_dir=(
+        Path(__file__).parents[1]
+        / "python_packages"
+        / (package_meta_data.id.replace("world.", "") + "-python")
+        / "src"
+    )
+    .joinpath(*[part for part in package_meta_data.id.replace("world.", "").split(".")])
 )
 
 if __name__ == "__main__":
