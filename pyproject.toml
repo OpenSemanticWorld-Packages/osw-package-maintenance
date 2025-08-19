@@ -1,0 +1,20 @@
+[project]
+name = "osw-package-maintenance"
+version = "0.1.0"
+description = "Your project description"
+authors = [
+    { name = "Simon Stier", email = "simon.stier@isc.fraunhofer.de"},
+    { name = "Lukas Gold", email = "lukas.gold@isc.fraunhofer.de"},
+    { name = "Andreas Raeder", email = "andreas.raeder@isc.fraunhofer.de"},
+    { name = "Matthias Albert Popp", email = "matthias.albert.popp@isc.fraunhofer.de"}
+]
+requires-python = ">=3.12"
+dependencies = [
+    "git-python>=1.0.3",
+    "osw[wikitext] @ git+https://github.com/OpenSemanticLab/osw-python.git@oold-and-opensemantic-package-integration",
+    "quantities-units @ git+https://github.com/opensemanticworld/quantities-units.git",
+]
+
+
+[tool.uv]
+managed = true

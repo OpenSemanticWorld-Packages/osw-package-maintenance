@@ -1,28 +1,40 @@
-from pathlib import Path
+import os
+import pathlib
 import pickle
 import re
+import sys
+from pathlib import Path
 from typing import Dict
 
 import osw
 
-from reusable import WorldCreat, WorldMeta
-import sys
-import os
-import pathlib
-sys.path.append(str(pathlib.Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) / "tools" / "quantities-units" / "src" / "quantities-units"))
-from main import update_local_osw, extract_data, transform_data, load_data, create_smw_quantity_properties
-#from osw.express import OswExpress
+# from osw.express import OswExpress
 from osw.auth import CredentialManager
-from osw.core import WtSite, WtPage, OSW, AddOverwriteClassOptions, OverwriteOptions
+from osw.core import OSW, AddOverwriteClassOptions, OverwriteOptions, WtPage, WtSite
 from osw.utils.wiki import get_osw_id
+from quantities_units.main import (
+    create_smw_quantity_properties,
+    extract_data,
+    load_data,
+    transform_data,
+    update_local_osw,
+)
+from reusable import WorldCreat, WorldMeta
 
-#osw_obj = OswExpress(
+# osw_obj = OswExpress(
 #    domain="wiki-dev.open-semantic-lab.org",  # cred_filepath=pwd_file_path
-#)
-wtsite = WtSite(WtSite.WtSiteConfig(iri="wiki-dev.open-semantic-lab.org", cred_mngr=CredentialManager(cred_filepath=os.path.join(os.path.dirname(__file__), "accounts.pwd.yaml"))))
+# )
+wtsite = WtSite(
+    WtSite.WtSiteConfig(
+        iri="wiki-dev.open-semantic-lab.org",
+        cred_mngr=CredentialManager(
+            cred_filepath=os.path.join(os.path.dirname(__file__), "accounts.pwd.yaml")
+        ),
+    )
+)
 osw_obj = OSW(site=wtsite)
 
-#update_local_osw(osw_obj=osw_obj) # note: this fails in debugging mode due to working directory not being set correctly
+# update_local_osw(osw_obj=osw_obj) # note: this fails in debugging mode due to working directory not being set correctly
 
 cache = True
 cache = False
@@ -32,7 +44,7 @@ if cache:
     # load pickle file
     with open(cache_file, "rb") as f:
         list_of_osw_obj_dict = pickle.load(f)
-        
+
 else:
 
     # I: Exctract Data
@@ -43,16 +55,22 @@ else:
     # dump pickle file
     with open(cache_file, "wb") as f:
         pickle.dump(list_of_osw_obj_dict, f)
-        
-quantity_property_entitites = create_smw_quantity_properties(list_of_osw_obj_dict=list_of_osw_obj_dict)
+
+quantity_property_entitites = create_smw_quantity_properties(
+    list_of_osw_obj_dict=list_of_osw_obj_dict
+)
 p_entities = list(quantity_property_entitites.values())
 
-#list_of_osw_obj_dict["fundamental_characteristics"]["Category:OSWee9c7e5c343e542cb5a8b4648315902f"], # Length
-#list_of_osw_obj_dict["characteristics"]["Category:OSW24275b1c56ea58dcae38c44409251a64"], # Diameter
+# list_of_osw_obj_dict["fundamental_characteristics"]["Category:OSWee9c7e5c343e542cb5a8b4648315902f"], # Length
+# list_of_osw_obj_dict["characteristics"]["Category:OSW24275b1c56ea58dcae38c44409251a64"], # Diameter
 
 # filter fundamental_characteristics and characteristics by name "Length" and "Diameter"
-c_entities = [x for x in list_of_osw_obj_dict["fundamental_characteristics"] if x.name == "Length"]
-c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Diameter"]
+c_entities = [
+    x for x in list_of_osw_obj_dict["fundamental_characteristics"] if x.name == "Length"
+]
+c_entities += [
+    x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Diameter"
+]
 c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Height"]
 c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Width"]
 
@@ -62,16 +80,16 @@ c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "
 #     quantity_property_entitites["Property:HasHeightValue"],
 #     quantity_property_entitites["Property:HasWidthValue"],
 # ]
-#print(p_entities)
+# print(p_entities)
 # osw_obj.store_entity( OSW.StoreEntityParam(entities=c_entities[0], overwrite=AddOverwriteClassOptions.replace_remote, namespace="Category", meta_category_title = "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7" ) )
 # osw_obj.store_entity( OSW.StoreEntityParam(entities=c_entities[1:4], overwrite=AddOverwriteClassOptions.replace_remote, namespace="Category",  meta_category_title = "Category:OSWac07a46c2cf14f3daec503136861f5ab" ) )
 # osw_obj.store_entity( OSW.StoreEntityParam(entities=p_entities, overwrite=AddOverwriteClassOptions.replace_remote,) )
 
 list_of_osw_obj_dict = {
-    #"prefixes": list_of_osw_obj_dict["prefixes"],
-    #"quanity_units": list_of_osw_obj_dict["quanity_units"],
-    #"composed_prefix_quantity_units": list_of_osw_obj_dict["composed_prefix_quantity_units"],
-    #"quantity_kinds": list_of_osw_obj_dict["quantity_kinds"],
+    # "prefixes": list_of_osw_obj_dict["prefixes"],
+    # "quanity_units": list_of_osw_obj_dict["quanity_units"],
+    # "composed_prefix_quantity_units": list_of_osw_obj_dict["composed_prefix_quantity_units"],
+    # "quantity_kinds": list_of_osw_obj_dict["quantity_kinds"],
     "fundamental_characteristics": list_of_osw_obj_dict["fundamental_characteristics"],
     "characteristics": list_of_osw_obj_dict["characteristics"],
     "properties": p_entities,
@@ -80,42 +98,46 @@ list_of_osw_obj_dict = {
 pages: Dict[str, WtPage] = {}
 
 for key, osw_obj_list in list_of_osw_obj_dict.items():
-    
+
     # Define the namespace
     namespace = None
     meta_category_title = None
-    if key == "fundamental_characteristics": 
+    if key == "fundamental_characteristics":
         namespace = "Category"
         # FundamentalQuantityValueType
         meta_category_title = "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7"
-    if key == "characteristics": 
+    if key == "characteristics":
         namespace = "Category"
         # QuantityValueType
-        meta_category_title = "Category:OSWac07a46c2cf14f3daec503136861f5ab"    
-        
-    pages = {**pages, **osw_obj.store_entity(
-        OSW.StoreEntityParam(
-            entities=osw_obj_list,
-            overwrite=AddOverwriteClassOptions.replace_remote,
-            namespace=namespace,
-            meta_category_title=meta_category_title,
-            offline=True,
-        )).pages}
+        meta_category_title = "Category:OSWac07a46c2cf14f3daec503136861f5ab"
 
-# remove meta from jsondata since it's uuid is regenerated each time    
+    pages = {
+        **pages,
+        **osw_obj.store_entity(
+            OSW.StoreEntityParam(
+                entities=osw_obj_list,
+                overwrite=AddOverwriteClassOptions.replace_remote,
+                namespace=namespace,
+                meta_category_title=meta_category_title,
+                offline=True,
+            )
+        ).pages,
+    }
+
+# remove meta from jsondata since it's uuid is regenerated each time
 for p in pages.values():
     jd = p.get_slot_content("jsondata")
     if "meta" in jd:
         del jd["meta"]
     p.set_slot_content("jsondata", jd)
-    
+
 page_titles = [
-    "Category:OSW4082937906634af992cf9a1b18d772cf", # "Quantity Value",
-    #"Category:OSW7014422ed34957de9d4ca0fb6e3d74d3": "Page has no jsondata.",
-    #"Category:OSW7468741a399c52338e44a8242cfed871": "Page has no jsondata.",
-    #"Category:OSW76131090bf885b3b93394f5f4574e1a1": "Page has no jsondata.",
-    "Category:OSWac07a46c2cf14f3daec503136861f5ab", # "Quantity Value Type",
-    "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7", # "Fundamental Quantity Value Type",
+    "Category:OSW4082937906634af992cf9a1b18d772cf",  # "Quantity Value",
+    # "Category:OSW7014422ed34957de9d4ca0fb6e3d74d3": "Page has no jsondata.",
+    # "Category:OSW7468741a399c52338e44a8242cfed871": "Page has no jsondata.",
+    # "Category:OSW76131090bf885b3b93394f5f4574e1a1": "Page has no jsondata.",
+    "Category:OSWac07a46c2cf14f3daec503136861f5ab",  # "Quantity Value Type",
+    "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7",  # "Fundamental Quantity Value Type",
 ]
 page_titles.extend(list(pages.keys()))
 
@@ -135,7 +157,16 @@ page_titles.extend(list(pages.keys()))
 # from typing import Any, Optional
 # from pydantic.v1 import Field
 
-result_model_path=Path(__file__).parent.parent / "python_packages" / "opensemantic.characteristics.quantitative-python" / "src" / "opensemantic" / "characteristics" / "quantitative" / "_model_generated.py"
+result_model_path = (
+    Path(__file__).parent.parent
+    / "python_packages"
+    / "opensemantic.characteristics.quantitative-python"
+    / "src"
+    / "opensemantic"
+    / "characteristics"
+    / "quantitative"
+    / "_model_generated.py"
+)
 # for i, p in enumerate(pages.values()):
 #     if i > 1:
 #         break
@@ -168,7 +199,7 @@ result_model_path=Path(__file__).parent.parent / "python_packages" / "opensemant
 # # Write the modified content back to a file
 # with open(result_model_path, 'w') as file:
 #     file.write(new_content)
-    
+
 # Provide information on the page package to be created
 package_meta_data = WorldMeta(
     # Package name
@@ -198,9 +229,7 @@ package_meta_data = WorldMeta(
 # Provide the information needed (only) to create the page package
 package_creation_config = WorldCreat(
     # Specify the path to the working directory - where the package is stored on disk
-    working_dir=Path(__file__).parents[1]
-    / "packages"
-    / package_meta_data.repo,
+    working_dir=Path(__file__).parents[1] / "packages" / package_meta_data.repo,
     offline_pages=pages,
 )
 
@@ -218,6 +247,6 @@ if __name__ == "__main__":
             #  package.json (which is only up-to-date after the execution of the
             #  package creation script)
             read_listed_pages_from_script=False,
-            #script_dir=Path(__file__).parent,
+            # script_dir=Path(__file__).parent,
         )
     )
