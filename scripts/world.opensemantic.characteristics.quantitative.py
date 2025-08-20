@@ -58,10 +58,10 @@ else:
     with open(cache_file, "wb") as f:
         pickle.dump(list_of_osw_obj_dict, f)
 
-quantity_property_entitites = create_smw_quantity_properties(
+quantity_property_entities = create_smw_quantity_properties(
     list_of_osw_obj_dict=list_of_osw_obj_dict
 )
-p_entities = list(quantity_property_entitites.values())
+p_entities = list(quantity_property_entities.values())
 
 # list_of_osw_obj_dict["fundamental_characteristics"]["Category:OSWee9c7e5c343e542cb5a8b4648315902f"], # Length
 # list_of_osw_obj_dict["characteristics"]["Category:OSW24275b1c56ea58dcae38c44409251a64"], # Diameter
@@ -77,10 +77,10 @@ c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "
 c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Width"]
 
 # p_entities = [
-#     quantity_property_entitites["Property:HasLengthValue"],
-#     quantity_property_entitites["Property:HasDiameterValue"],
-#     quantity_property_entitites["Property:HasHeightValue"],
-#     quantity_property_entitites["Property:HasWidthValue"],
+#     quantity_property_entities["Property:HasLengthValue"],
+#     quantity_property_entities["Property:HasDiameterValue"],
+#     quantity_property_entities["Property:HasHeightValue"],
+#     quantity_property_entities["Property:HasWidthValue"],
 # ]
 # print(p_entities)
 # osw_obj.store_entity( OSW.StoreEntityParam(entities=c_entities[0], overwrite=AddOverwriteClassOptions.replace_remote, namespace="Category", meta_category_title = "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7" ) )
@@ -89,7 +89,7 @@ c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "
 
 list_of_osw_obj_dict = {
     # "prefixes": list_of_osw_obj_dict["prefixes"],
-    # "quanity_units": list_of_osw_obj_dict["quanity_units"],
+    # "quantity_units": list_of_osw_obj_dict["quantity_units"],
     # "composed_prefix_quantity_units": list_of_osw_obj_dict["composed_prefix_quantity_units"],
     # "quantity_kinds": list_of_osw_obj_dict["quantity_kinds"],
     "fundamental_characteristics": list_of_osw_obj_dict["fundamental_characteristics"],
