@@ -38,28 +38,27 @@ osw_obj = OSW(site=wtsite)
 
 # update_local_osw(osw_obj=osw_obj) # note: this fails in debugging mode due to working directory not being set correctly
 
-cache = True
+# cache = True
 cache = False
 cache_file = Path(__file__).parent / "list_of_osw_obj_dict.pickle"
 
-if cache:
+if cache and cache_file.exists():
     # load pickle file
     with open(cache_file, "rb") as f:
-        list_of_osw_obj_dict = pickle.load(f)
+        entities_dict = pickle.load(f)
 
 else:
-
-    # I: Exctract Data
+    # I: Extract Data
     osw_ontology_instance = extract_data(debug=True)
     # II: Transform Data
-    list_of_osw_obj_dict = transform_data(osw_ontology=osw_ontology_instance)
+    entities_dict = transform_data(osw_ontology=osw_ontology_instance)
 
     # dump pickle file
     with open(cache_file, "wb") as f:
-        pickle.dump(list_of_osw_obj_dict, f)
+        pickle.dump(entities_dict, f)
 
 quantity_property_entities = create_smw_quantity_properties(
-    list_of_osw_obj_dict=list_of_osw_obj_dict
+    list_of_osw_obj_dict=entities_dict
 )
 p_entities = list(quantity_property_entities.values())
 
@@ -68,13 +67,11 @@ p_entities = list(quantity_property_entities.values())
 
 # filter fundamental_characteristics and characteristics by name "Length" and "Diameter"
 c_entities = [
-    x for x in list_of_osw_obj_dict["fundamental_characteristics"] if x.name == "Length"
+    x for x in entities_dict["fundamental_characteristics"] if x.name == "Length"
 ]
-c_entities += [
-    x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Diameter"
-]
-c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Height"]
-c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "Width"]
+c_entities += [x for x in entities_dict["characteristics"] if x.name == "Diameter"]
+c_entities += [x for x in entities_dict["characteristics"] if x.name == "Height"]
+c_entities += [x for x in entities_dict["characteristics"] if x.name == "Width"]
 
 # p_entities = [
 #     quantity_property_entities["Property:HasLengthValue"],
@@ -87,19 +84,20 @@ c_entities += [x for x in list_of_osw_obj_dict["characteristics"] if x.name == "
 # osw_obj.store_entity( OSW.StoreEntityParam(entities=c_entities[1:4], overwrite=AddOverwriteClassOptions.replace_remote, namespace="Category",  meta_category_title = "Category:OSWac07a46c2cf14f3daec503136861f5ab" ) )
 # osw_obj.store_entity( OSW.StoreEntityParam(entities=p_entities, overwrite=AddOverwriteClassOptions.replace_remote,) )
 
-list_of_osw_obj_dict = {
-    # "prefixes": list_of_osw_obj_dict["prefixes"],
-    # "quantity_units": list_of_osw_obj_dict["quantity_units"],
-    # "composed_prefix_quantity_units": list_of_osw_obj_dict["composed_prefix_quantity_units"],
-    # "quantity_kinds": list_of_osw_obj_dict["quantity_kinds"],
-    "fundamental_characteristics": list_of_osw_obj_dict["fundamental_characteristics"],
-    "characteristics": list_of_osw_obj_dict["characteristics"],
-    "properties": p_entities,
-}
+keys_to_keep = [
+    # "prefixes",
+    # "quantity_units",
+    # "composed_prefix_quantity_units",
+    # "quantity_kinds",
+    "fundamental_characteristics",
+    "characteristics",
+]
+entities_dict = {key: entities_dict[key] for key in keys_to_keep}
+entities_dict["properties"] = p_entities
 
 pages: Dict[str, WtPage] = {}
 
-for key, osw_obj_list in list_of_osw_obj_dict.items():
+for key, osw_obj_list in entities_dict.items():
 
     # Define the namespace
     namespace = None
@@ -217,7 +215,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Contains measureable qualitities based on (physical) quantities"),
     # Specify the package version - use semantic versioning
-    version="0.2.2",
+    version="0.2.5",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.quantities",
@@ -233,6 +231,15 @@ package_creation_config = WorldCreat(
     # Specify the path to the working directory - where the package is stored on disk
     working_dir=Path(__file__).parents[1] / "packages" / package_meta_data.repo,
     offline_pages=pages,
+    generate_python_code=True,
+    python_code_working_dir=(
+        Path(__file__).parents[1]
+        / "python_packages"
+        / (package_meta_data.id.replace("world.", "") + "-python")
+        / "src"
+    ).joinpath(
+        *[part for part in package_meta_data.id.replace("world.", "").split(".")]
+    ),
 )
 
 if __name__ == "__main__":
