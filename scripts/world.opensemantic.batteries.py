@@ -81,12 +81,10 @@ package_meta_data = WorldMeta(
         "Category:OSW5c1c253b8f0e40a69183fb4dcfc4a90e",  # Nmc811Electrode
         "Category:OSWdd31fe7aeeee4565a7c16254b9948874",  # BatteryElectrodeType
         # AnalyticalLaboratoryProcess , subcategories and meta categories
-        "Category:OSWfa914762adaa4665a63b6a77c3ea6eed",  # AnalyticalLaboratoryProcess
         "Category:OSW6f39d77241e24a33ab6d036dfac03ace",  # ElectrochemicalTest
         "Category:OSW9d5fc755409c433b822cf5c8feecdb32",  # MechanischerTest
         "Category:OSW47c67760dd164c82b570f58c8269b373",  # PostMortemExperiment
         "Category:OSWafda1f2328804e3a89bf90f8af9c5527",  # BatteryCellOpening
-        "Category:OSW6cc7d1cc87dc4fa8935d5b3d2a9b55c5",  # AnalyticalLabProcessType
         # ElectrochemicalTestingDevice , subcategories and meta categories
         "Category:OSW69729530f3ca4addaf8dd95ea3781607",  # ElectrochemicalTestingDevice
         "Category:OSWf036fa2541c54bd4bc4095167b4af60c",  # BatteryCycler
