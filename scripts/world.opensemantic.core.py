@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.45.0",
+    version="0.49.0",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -43,6 +43,12 @@ package_meta_data = WorldMeta(
         "JsonSchema:QuantityProperty",
         "JsonSchema:Meta",
         "JsonSchema:SerialNumber",
+        "JsonSchema:TypeNumber", 
+        "JsonSchema:Manufacturer",
+        "JsonSchema:DataSheet",
+        "JsonSchema:SafetyDataSheet",
+        "JsonSchema:Manual",
+        "JsonSchema:Instructions",
         "Category:Category",
         "Category:Entity",
         "Category:Item",
@@ -54,9 +60,11 @@ package_meta_data = WorldMeta(
         "Category:OSW3e3f5dd4f71842fbb8f270e511af8031",  # LocalFile
         "Category:OSW05b244d0a669436e96fe4e1631d5a171",  # RemoteFile
         "Category:OSW11a53cdfbdc24524bf8ac435cbf65d9d",  # WikiFile
+        "Category:OSWc11438cd6c814ed1a5a253555ee351b4",  # ProcessType
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
         "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task
         "Category:OSWcbb09a36336740c6a2cd62db9bf647ec",  # IntangibleItem
+        "Category:OSWca99a9bb9ad24386b222d18a73c2af5e",  # Physical Item Type
         "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # Physical Item
         "Category:OSWa5812d3b5119416c8da1606cbe7054eb",  # DefinedTerm (moved from base)
         "Category:OSW09f6cdd54bc54de786eafced5f675cbe",  # Keyword
