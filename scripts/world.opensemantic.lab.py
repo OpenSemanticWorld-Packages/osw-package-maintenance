@@ -17,22 +17,35 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("For material science, etc."),
     # Specify the package version - use semantic versioning
-    version="0.3.1",
+    version="0.5.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
     ],
     # Author(s)
-    author=["Simon Stier"],
+    author=["Simon Stier", "Lukas Gold"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
+        "Category:OSW182916df3eee472e88e7c8d114a7fe27",  # MaterialType
         "Category:OSW31ca9a739cb24079b36824045c0832aa",  # Material
+        # "Category:OSW2afce49fe800460a95cf480cc0656757",  # ChemicalSubstanceType
         "Category:OSW0583b134c618484c9911a3dff145c7eb",  # ChemicalCompound
-        "Category:OSW88894b63a51d46b08b5b4b05a6b1b3c3",  # Sample
+        # "Category:OSW0c69914a29b74f3c9e9d9ff7a6880715",  # Shipment => needs to be added in base
+        # "Category:OSW25ab317fa369435797b7a92c9fd3bde6",  # Sample type
+        # "Category:OSW5c6f6eaaa96e4f84ad6f2ea02fc18ce4",  # Sampling
+        "Category:OSW88894b63a51d46b08b5b4b05a6b1b3c3",  # MaterialSample
         "Category:OSW29f0a4619cc243679e68b682d3bdb890",  # GeoSample
-        "Category:OSW0e7fab2262fb4427ad0fa454bc868a0d",  # ElnEntry
-        "Category:OSWda27e2fff10848ebb728ffb69c49a16d",  # DataTool"
+        "Category:OSW61d19dea4b9c4de8bcbde8036fc0e0a6",  # LabProcessType
+        "Category:OSW0e7fab2262fb4427ad0fa454bc868a0d",  # LaboratoryProcess
+        # "Category:OSW6cc7d1cc87dc4fa8935d5b3d2a9b55c5",  # AnalyticalLabProcessType
+        # "Category:OSWfa914762adaa4665a63b6a77c3ea6eed",  # AnalyticalLaboratoryProcess
+        # "Category:OSWe21775c8dd604739885dfc24c32cc548",  # Procedure => needs to be added in base
+        # "Category:OSWb8435fabafcb48f985422448e9df5faa",  # Mixing of chemical substances
+        # "Category:OSWe2d16d21532a40cfa0abe577629d5c37",  # Test procedure
+        # "Category:OSWe0572f2791844010962886b892970b4d",  # Controlled environment
+        # "Category:OSWb3b9ec5cb50d401c9b996ce3009b5c54",  # Environmental test chamber
+        # "Category:OSW50c8314e8b2c416db73ce935f1dd8d22",  # Chemical System
         "Property:HasCount",
         "Property:HasMass",
         "Property:HasVolume",
