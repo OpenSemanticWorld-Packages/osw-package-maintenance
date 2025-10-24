@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.33.0",
+    version="0.36.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -61,13 +61,16 @@ package_meta_data = WorldMeta(
         "Category:OSWab60f9a227954ee0be92344ff6272420",  # State
         "Category:OSW807f1da5b42e42f296b213ab06ca873b",  # City
         "Category:OSW95efaf34e2c7439e8e7967233910e44b",  # Region
-        "Category:OSWd845b96813a344458f140e48c4d063fd",  # MetaDeviceCategory
+        "Category:OSWd845b96813a344458f140e48c4d063fd",  # DeviceType
         "Category:OSWf0fe562f422d49c6877490b3dfee2f3f",  # Device
+        "Category:OSW0b6e695c4bb74e9ea5aa7f5da3150653",  # StrictParticipantsProcessType
         "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess
         "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
         "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess ToDo: maybe to specific
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
+        "Category:OSW22dc1c3790974a1bb7187d7a77f7e767"   # DataSoftware
+        "Category:OSW51ad0d1716254c77a2b7a03217f23b43",  # Database
         "Category:OSW8c56fd1e858f499da801691c5f2b7309",  # WebService
         "Category:OSW72eae3c8f41f4a22a94dbc01974ed404",  # PrefectFlow
         "JsonSchema:PrefectWorkflowRuns",  # PrefectWorkflowRuns
