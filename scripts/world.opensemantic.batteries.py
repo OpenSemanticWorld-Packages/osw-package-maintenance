@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides battery specific items like ElectrochemicalTest, BatteryCell, etc."
     ),
     # Specify the package version - use semantic versioning
-    version="1.1.0",
+    version="1.1.1",
     # Specify the required PagePackages
     requiredPackages=["world.opensemantic.base", "world.opensemantic.lab"],
     # Author(s)
