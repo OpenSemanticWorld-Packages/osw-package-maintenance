@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.36.0",
+    version="0.37.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -39,6 +39,7 @@ package_meta_data = WorldMeta(
         "JsonSchema:EndDate",
         "JsonSchema:EndDateTime",
         "JsonSchema:Duration",
+        "Category:OSWb4e577c7867b43ed87adec9d92592638",  # Role
         "Category:OSW712583f2479944deb2546b77cf860dda",  # Creative Work
         "Category:OSW92cc6b1a2e6b4bb7bad470dfdcfdaf26",  # Article
         "Category:OSWe2c50b1034684c1b9a5c21ad371d6381",  # How To
@@ -50,6 +51,9 @@ package_meta_data = WorldMeta(
         "Category:OSW9ed6b89cc3c7492896570951a5b094d6",  # MeetingSeries
         "Category:OSW81e9e22e7d934382a6a56df7d3736957",  # Recipe
         "Category:OSWfe72974590fd4e8ba94cd4e8366375e8",  # DataSet
+        "Category:OSW0d6584b3e2b64e9595733c4c3963c486",  # Dataset schema
+        "Category:OSWafcac83979f4472298b6acdc01981728",  # Digital document
+        "Category:OSWccac243b31f94574847861e5d9685b82",  # Data format
         "Category:OSW3d238d05316e45a4ac95a11d7b24e36b",  # Location
         "Category:OSW28f71f2c20ad48c38c4e4d190a95c0b8",  # Place
         "Category:OSW473d7a1ed48544d1be83b258b5810948",  # Site
@@ -66,7 +70,16 @@ package_meta_data = WorldMeta(
         "Category:OSW0b6e695c4bb74e9ea5aa7f5da3150653",  # StrictParticipantsProcessType
         "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess
         "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
-        "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess ToDo: maybe to specific
+        "Category:OSWe21775c8dd604739885dfc24c32cc548",  # Procedure - moved from lab
+        "Category:OSW0c69914a29b74f3c9e9d9ff7a6880715",  # Shipment - moved from lab
+        "Category:OSW5be796e8a33c4567be1f31453fa747e8",  # Shipment service provider
+        "Category:OSWf8bf7b1902d94125ad8c20590087c4f6",  # Shipment Status
+        "Item:OSWaf335426cb8e44e9a3b109bcdc881bb4", 	 # In Transit
+        "Item:OSW1e8a24565cc54dffa319d04b9e88858c",  	 # Returned
+        "Item:OSW51a0d24db743463799547f5c63de95cc",  	 # Delivered
+        "Item:OSW771e9816bce64e20938befcfbfb9493f",  	 # Cancelled
+        "Item:OSWd47f63e08475463abe8d6cffbd2f93ea",  	 # Ready for pickup
+        "Item:OSWe60b7cc0603a4a59af0914b51b5d2b17",  	 # Problem
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
         "Category:OSW22dc1c3790974a1bb7187d7a77f7e767"   # DataSoftware
@@ -98,6 +111,7 @@ package_meta_data = WorldMeta(
         "Category:OSW5f4a3751d23e482d80fb0b72dcd6bc31",  # Corporation
         "Category:OSWd7085ef89b0e4a69ac4f2d28bda2d2c0",  # Foundation
         "Category:OSW11ee14fb9f774b4b89bdb9bb89aac14d",  # University
+        "Category:OSWd4129507353742858a60720736334513",  # Manufacturer
         "Category:OSWfe3e842b804445c7bb0dd8ee61da2d70",  # OrganizationalSubUnit
         "Category:OSW94aa074255374580b70337340c5ccc1b",  # Department
         "Category:OSWa01126bc9e9048988cb0f49e359015bc",  # Faculty
@@ -155,7 +169,6 @@ package_meta_data = WorldMeta(
         # "Property:HasDatabase",
         "Property:HasInventoryNumber",
         # "Property:HasMeasurementChannels",
-        "Property:HasRiskAssessment",
         "Property:HasOwner",
         "Property:HasNetworkDomain",
         "Property:HasIp4Address",
@@ -165,6 +178,9 @@ package_meta_data = WorldMeta(
         "Property:HasProbabilityOfSuccessfulFunding",
         "Property:HasBudget",
         "Property:HasWeightedBudget",
+        "Property:HasAbbreviation",
+        "Property:HasOrganization",
+        "Property:HasOu",
     ],
 )
 # Provide the information needed (only) to create the page package
