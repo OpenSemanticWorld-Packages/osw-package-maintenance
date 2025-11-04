@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.37.0",
+    version="0.37.2",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -82,7 +82,7 @@ package_meta_data = WorldMeta(
         "Item:OSWe60b7cc0603a4a59af0914b51b5d2b17",  	 # Problem
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
-        "Category:OSW22dc1c3790974a1bb7187d7a77f7e767"   # DataSoftware
+        "Category:OSW22dc1c3790974a1bb7187d7a77f7e767",   # DataSoftware
         "Category:OSW51ad0d1716254c77a2b7a03217f23b43",  # Database
         "Category:OSW8c56fd1e858f499da801691c5f2b7309",  # WebService
         "Category:OSW72eae3c8f41f4a22a94dbc01974ed404",  # PrefectFlow
