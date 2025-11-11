@@ -19,11 +19,11 @@ package_meta_data = WorldMeta(
         "Provides battery specific items like ElectrochemicalTest, BatteryCell, etc."
     ),
     # Specify the package version - use semantic versioning
-    version="1.1.1",
+    version="1.1.2",
     # Specify the required PagePackages
     requiredPackages=["world.opensemantic.base", "world.opensemantic.lab"],
     # Author(s)
-    author=["Simon Stier", "Lukas Gold"],
+    author=["Simon Stier", "Lukas Gold", "Simon Feiler"],
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
@@ -82,7 +82,7 @@ package_meta_data = WorldMeta(
         "Category:OSWdd31fe7aeeee4565a7c16254b9948874",  # BatteryElectrodeType
         # AnalyticalLaboratoryProcess , subcategories and meta categories
         "Category:OSW6f39d77241e24a33ab6d036dfac03ace",  # ElectrochemicalTest
-        "Category:OSW9d5fc755409c433b822cf5c8feecdb32",  # MechanischerTest
+        "Category:OSW9d5fc755409c433b822cf5c8feecdb32",  # MechanicalTest
         "Category:OSW47c67760dd164c82b570f58c8269b373",  # PostMortemExperiment
         "Category:OSWafda1f2328804e3a89bf90f8af9c5527",  # BatteryCellOpening
         # ElectrochemicalTestingDevice , subcategories and meta categories
