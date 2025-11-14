@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.37.3",
+    version="0.38.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -53,6 +53,7 @@ package_meta_data = WorldMeta(
         "Category:OSWfe72974590fd4e8ba94cd4e8366375e8",  # DataSet
         "Category:OSW0d6584b3e2b64e9595733c4c3963c486",  # Dataset schema
         "Category:OSWafcac83979f4472298b6acdc01981728",  # Digital document
+        "Category:OSW34f9d66c7e1241c8b9543231526f126d",  # Data term
         "Category:OSWccac243b31f94574847861e5d9685b82",  # Data format
         "Category:OSW3d238d05316e45a4ac95a11d7b24e36b",  # Location
         "Category:OSW28f71f2c20ad48c38c4e4d190a95c0b8",  # Place
@@ -81,10 +82,13 @@ package_meta_data = WorldMeta(
         "Item:OSWd47f63e08475463abe8d6cffbd2f93ea",  	 # Ready for pickup
         "Item:OSWe60b7cc0603a4a59af0914b51b5d2b17",  	 # Problem
         "Category:OSW02590972aeba46d7864ed492c0c11384",  # Host
+        "Category:OSWda27e2fff10848ebb728ffb69c49a16d",  # Data tool
         "Category:OSW77e749fc598341ac8b6d2fff21574058",  # Software
         "Category:OSW22dc1c3790974a1bb7187d7a77f7e767",   # DataSoftware
         "Category:OSW51ad0d1716254c77a2b7a03217f23b43",  # Database
         "Category:OSW8c56fd1e858f499da801691c5f2b7309",  # WebService
+        "Category:OSWacdb001c926c46b998af3e645d36b13f",  # Database server
+        "Category:OSWc1dc531bc4e84d409d9ee5719b3b7632",  # Database schema
         "Category:OSW72eae3c8f41f4a22a94dbc01974ed404",  # PrefectFlow
         "JsonSchema:PrefectWorkflowRuns",  # PrefectWorkflowRuns
         "Category:OSWb2d7e6a2eff94c82b7f1f2699d5b0ee3",  # Project
