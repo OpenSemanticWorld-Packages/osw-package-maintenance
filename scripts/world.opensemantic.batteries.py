@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides battery specific items like ElectrochemicalTest, BatteryCell, etc."
     ),
     # Specify the package version - use semantic versioning
-    version="1.1.2",
+    version="1.2.0",
     # Specify the required PagePackages
     requiredPackages=["world.opensemantic.base", "world.opensemantic.lab"],
     # Author(s)
@@ -146,6 +146,9 @@ package_meta_data = WorldMeta(
         "Category:OSWa211cf52e86e47929768a769235f7144",  # Format
         "Property:HasFormat",
         "Property:HasFormFactor",
+
+        "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess
+        "Property:HasRiskAssessment",
     ],
 )
 # Provide the information needed (only) to create the page package
