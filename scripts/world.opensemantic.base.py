@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.38.1",
+    version="0.38.2",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -93,6 +93,7 @@ package_meta_data = WorldMeta(
         "Category:OSW72eae3c8f41f4a22a94dbc01974ed404",  # PrefectFlow
         "JsonSchema:PrefectWorkflowRuns",  # PrefectWorkflowRuns
         "Category:OSWb2d7e6a2eff94c82b7f1f2699d5b0ee3",  # Project
+        "Category:OSWb47292f68e834e3592f1fa8f706ddde4",  # Work package
         "Category:OSW595b282aedf048788f3ee326454792ce",  # Budget Type
         "Category:OSW25bc4daf97644737a76434b88e1d5b21",  # Grant
         "Category:OSWbe80b28aefd64921ba2e8e2d6225416e",  # Monetary Grant
