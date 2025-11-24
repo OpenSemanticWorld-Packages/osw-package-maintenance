@@ -125,6 +125,8 @@ package_meta_data = WorldMeta(
         "Property:HasTool",
         # Item
         "Property:Visible to",
+        # Physical Item
+        "Property:HasSerialNumber",
         # UserGroup and UserAccount
         "Property:HasGroupname",
         "Property:HasUsername",
