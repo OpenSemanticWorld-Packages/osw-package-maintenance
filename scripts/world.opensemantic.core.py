@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.51.3",
+    version="0.52.2",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -29,6 +29,7 @@ package_meta_data = WorldMeta(
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
+        "Item:OSWf831ae62f2194f58a828b99ab406898b",  # OSW Core Package itself (manually updated for now)
         "Module:Lustache",
         "Module:Lustache/Context",
         "Module:Lustache/Renderer",
@@ -53,6 +54,7 @@ package_meta_data = WorldMeta(
         "Category:Category",
         "Category:Entity",
         "Category:Item",
+        "Category:OSW31a9c96c1f444f84b944d49afbce409b",  # PagePackage
         "Category:OSWb24f37ada8d043c194e7036df5d86b39",  # UserGroup
         "Item:OSW5335efe7928d49619412fe28363b5e8a",  # Administrators
         "Item:OSW2b28cfd4bf8446e586f0e90152127b4a",  # RegisteredUsers
@@ -64,10 +66,10 @@ package_meta_data = WorldMeta(
         "Category:OSWff333fd349af4f65a69100405a9e60c7",  # File
         "Category:OSW3e3f5dd4f71842fbb8f270e511af8031",  # LocalFile
         "Category:OSW05b244d0a669436e96fe4e1631d5a171",  # RemoteFile
-        "Category:OSW11a53cdfbdc24524bf8ac435cbf65d9d",  # WikiFile
+        "Category:OSW11a53cdfbdc24524bf8ac435cbf65d9d",  # WikiFile => mwjson editor file upload schema
         "Category:OSWc11438cd6c814ed1a5a253555ee351b4",  # ProcessType
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
-        "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task
+        "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task => kanban board 
         "Category:OSWcbb09a36336740c6a2cd62db9bf647ec",  # IntangibleItem
         "Category:OSWca99a9bb9ad24386b222d18a73c2af5e",  # Physical Item Type
         "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # Physical Item
@@ -75,7 +77,7 @@ package_meta_data = WorldMeta(
         "Category:OSW09f6cdd54bc54de786eafced5f675cbe",  # Keyword
         "Item:OSW452ec0273916478099c4716395e1bc18",  # Keyword: Classification category
         "Category:OSWd02741381aaa4709ae0753a0edc341ce",  # Enumeration
-        "Category:OSW2c32802be59040248c85eda3479d484c",  # StatusEnumeration
+        "Category:OSW2c32802be59040248c85eda3479d484c",  # StatusEnumeration (deprecated, use TaskStatus)
         "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4",  # TaskStatus (required for
         # Task/Kanban Board)
         "Item:OSWf474ec34b7df451ea8356134241aef8a",  # State:Done
@@ -85,7 +87,10 @@ package_meta_data = WorldMeta(
         "Item:OSW8743c7d03c4e46c1bd42bb05e1a082d9",  # High
         "Item:OSW8d781c35212548fa9b2fccad3765da65",  # Medium
         "Item:OSWcaf7db070ad6407babc5245e84d76840",  # Low
-        "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool
+        "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool (dependency for Process)
+        "Category:OSWb97757b46edb430591758662c18d354d",  # Event"
+        "Category:OSW5433f882b9f14dca81994e058c8ab4a0",  # ToolMaintenanceEvent
+        "Template:Query/SlotAction",
         "Category:Property",
         "Category:AnnotationProperty",
         "Category:ObjectProperty",
@@ -138,7 +143,21 @@ package_meta_data = WorldMeta(
         # UserGroup and UserAccount
         "Property:HasGroupname",
         "Property:HasUsername",
-        # "Property:HasTypicalProcess",  # used by tool
+        # PagePackage
+        "Property:HasId",
+        "Property:HasUrl",
+        "Property:HasVersion",
+        # Tool & MaintenanceEvent
+        "Property:HasEvent",
+        "Property:HasSlot",
+        "Property:HasOccupant",
+        # "Property:HasPurpose",
+        "Property:HasTarget",
+        "Property:HasAction",
+        "Property:HasTypeRestriction",
+        "Property:HasInitDate",
+        "Property:HasTypicalProcess",
+        # Templates
         "Template:Helper/UI/Tiles/Grid",
         "Template:Helper/UI/Tiles/Tile",
         "Template:Helper/UI/VE/Hidden",

@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.39.0",
+    version="0.40.1",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -33,6 +33,7 @@ package_meta_data = WorldMeta(
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
+        "Item:OSW92cf5f3e72824a65b5d48746b4722e10",  # OSW Base Package itself (manually updated for now)
         "JsonSchema:PostalAddress",
         "JsonSchema:StartDate",
         "JsonSchema:StartDateTime",
@@ -44,7 +45,6 @@ package_meta_data = WorldMeta(
         "Category:OSW92cc6b1a2e6b4bb7bad470dfdcfdaf26",  # Article
         "Category:OSWe2c50b1034684c1b9a5c21ad371d6381",  # How To
         "Category:OSW494f660e6a714a1a9681c517bbb975da",  # Tutorial
-        "Category:OSWb97757b46edb430591758662c18d354d",  # Event
         "Category:OSW0e084decca6f48a7b023d6b7b2c1452d",  # EventWithPeople
         "Category:OSWf62d07b325124027b82fbec0a7b852df",  # EventSeries
         "Category:OSW5c7c84f0bfbe4347ba7fbe7b346fd106",  # Meeting
@@ -158,17 +158,11 @@ package_meta_data = WorldMeta(
         "Item:OSWd8612de9ddfa4b19a575a0e9e7493fd0",  # Consumables
         "Item:OSWe3a3b9119028433d883910abd9189e01",  # Other
         "Template:Editor/Requirements",
-        "Property:HasId",
         "Property:IsRelatedTo",
         "Property:HasPhoneNumber",
         "Property:HasApprover",
         "Property:HasOrderer",
         "Property:HasContact",
-        "Property:HasUrl",
-        "Property:HasVersion",
-        "Property:HasManufacturer",
-        "Property:HasManual",
-        # "Property:HasPurpose",
         "Property:HasResponsiblePerson",
         "Property:IsLocatedIn",
         "Property:HasDepartment",
