@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.52.2",
+    version="0.53.2",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -59,7 +59,6 @@ package_meta_data = WorldMeta(
         "Item:OSW5335efe7928d49619412fe28363b5e8a",  # Administrators
         "Item:OSW2b28cfd4bf8446e586f0e90152127b4a",  # RegisteredUsers
         "Category:OSW8b3e627eb76b46d68fce3a12ff220c8e",  # UserAccount
-        "Category:Term",
         "Category:OSW379d5a1589c74c82bc0de47938264d00",  # OwlThing
         "Category:OSW5f0dff1c477e45e7ad45e4e247e28f35",  # Documentation Extension
         "Category:OSW2ac4493f8635481eaf1db961b63c8325",  # Data
@@ -194,6 +193,9 @@ package_creation_config = WorldCreat(
         "File:OSW5f36a59d4bb94ea0bf93f08f7470f609.png",  # example/test file
         "File:OSWd1c24f1c4b014ebe99c2a83672e3dfc7.png",  # example/test file
     ],
+    generate_package_documentation_page=True,
+    generate_python_code=False,
+    python_code_working_dir=Path(__file__).parents[1] / "python_packages" / "opensemantic.core-python" / "src" / "opensemantic" / "core",
 )
 
 if __name__ == "__main__":
