@@ -35,6 +35,9 @@
 [submodule "tools/quantities-units"]
 	path = tools/quantities-units
 	url = https://github.com/opensemanticworld/quantities-units
+[submodule "tools/osw-python-package-generator"]
+	path = tools/osw-python-package-generator
+	url = https://github.com/OpenSemanticWorld-Packages/osw-python-package-generator
 [submodule "python_packages/opensemantic-python"]
 	path = python_packages/opensemantic-python
 	url = https://github.com/OpenSemanticWorld-Packages/opensemantic-python
@@ -44,6 +47,9 @@
 [submodule "python_packages/opensemantic.core-python"]
 	path = python_packages/opensemantic.core-python
 	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.core-python
+[submodule ".\\python_packages\\opensemantic.lab-python"]
+	path = .\\python_packages\\opensemantic.lab-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.lab-python
 [submodule "packages/world.opensemantic.characteristics.basic"]
 	path = packages/world.opensemantic.characteristics.basic
 	url = https://github.com/OpenSemanticWorld-Packages/world.opensemantic.characteristics.basic
@@ -62,3 +68,6 @@
 [submodule ".\\python_packages\\opensemantic.characteristics.quantitative-python"]
 	path = .\\python_packages\\opensemantic.characteristics.quantitative-python
 	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.characteristics.quantitative-python
+[submodule ".\\tools\\qudt-parsing"]
+	path = .\\tools\\qudt-parsing
+	url = https://github.com/OpenSemanticWorld-Packages/qudt-parsing
