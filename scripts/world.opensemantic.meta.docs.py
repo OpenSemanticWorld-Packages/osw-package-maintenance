@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides core documentation of OpenSemanticWorld / -Lab"),
     # Specify the package version - use semantic versioning
-    version="0.7.1",
+    version="0.8.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
@@ -27,6 +27,10 @@ package_meta_data = WorldMeta(
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
+        "Item:OSW3ab37481111645a0bb8d3348d57d462a",  # OpenSemanticLab Manual
+        "Item:OSW8a9c73cba7c64234bda71e1b682a641c",  # OpenSemanticLab for end users
+        "Item:OSWae8546dad40e487fa837db9c5ab07a5f",  # OpenSemanticLab for advanced users
+        "Item:OSWe0cbdc9c1e0e4a53b21bd83e6c6d99ad",  # OpenSemanticLab for developers
         "Item:OSW70b4d6464c1d44a887eb86e3b39b8751",  # StructedDataWorkshop
         "Item:OSWf1df064239044b8fa3c968339fb93344",  # JsonTutorial
         "Item:OSWf4a9514baed04859a4c6c374a7312f10",  # JsonSchemaTutorial
@@ -39,10 +43,10 @@ package_meta_data = WorldMeta(
         "Item:OSW7113f5cf921a4c82ad1872afeff9d01d",  # TranscendWikitext
         "Item:OSWab674d663a5b472f838d8e1eb43e6784",  # OswSchema
         "Item:OSW659a81662ff44af1b2b6febeee7c3a25",  # OswPythonPackage
-        # "Item:OSW92619b0700984fe7913e5fbbd7f194dc", # OswSpecialEditors
         "Item:OSWc596ce27af054764ae9716748d01555e",  # OswOntologyImport
-        "Item:OSWdb485a954a88465287b341d2897a84d6",  # OswIntroduction,
-        "Item:OSW8bccb1f0123f47d1831a1348ecbe63cc",  # About this platform,
+        "Item:OSWdb485a954a88465287b341d2897a84d6",  # OswIntroduction
+        "Item:OSW8bccb1f0123f47d1831a1348ecbe63cc",  # About this platform
+        "Item:OSW92619b0700984fe7913e5fbbd7f194dc",  # OSW Special Editors and Viewer
     ],
 )
 # Provide the information needed (only) to create the page package
