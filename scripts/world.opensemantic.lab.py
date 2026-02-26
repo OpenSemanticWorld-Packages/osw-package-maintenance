@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("For material science, etc."),
     # Specify the package version - use semantic versioning
-    version="0.6.1",
+    version="0.6.2",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
@@ -27,6 +27,7 @@ package_meta_data = WorldMeta(
     # List the full page titles of the pages to be included in the package
     # You can include a comment in the same line, stating the page label
     page_titles=[
+        "Item:OSWd09a59874187410180d12004239898cd",  # world.opensemantic.lab
         "Category:OSW182916df3eee472e88e7c8d114a7fe27",  # MaterialType
         "Category:OSW31ca9a739cb24079b36824045c0832aa",  # Material
         "Category:OSW2afce49fe800460a95cf480cc0656757",  # ChemicalSubstanceType
