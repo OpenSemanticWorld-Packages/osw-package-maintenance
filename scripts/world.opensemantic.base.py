@@ -71,6 +71,7 @@ package_meta_data = WorldMeta(
         "Category:OSW0b6e695c4bb74e9ea5aa7f5da3150653",  # StrictParticipantsProcessType
         "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess
         "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
+        "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess
         "Category:OSWe21775c8dd604739885dfc24c32cc548",  # Procedure - moved from lab
         "Category:OSW0c69914a29b74f3c9e9d9ff7a6880715",  # Shipment - moved from lab
         "Category:OSW5be796e8a33c4567be1f31453fa747e8",  # Shipment service provider
