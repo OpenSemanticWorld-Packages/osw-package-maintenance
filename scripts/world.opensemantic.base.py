@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.40.5",
+    version="0.41.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -73,6 +73,24 @@ package_meta_data = WorldMeta(
         "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
         "Category:OSW3886740859ae459588fee73d3bb3c83e",  # RiskAssessmentProcess
         "Category:OSWe21775c8dd604739885dfc24c32cc548",  # Procedure - moved from lab
+        # Process, Task, Physical Item, Tool, Event (moved from core)
+        "Category:OSWc11438cd6c814ed1a5a253555ee351b4",  # ProcessType
+        "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
+        "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task
+        "Category:OSWca99a9bb9ad24386b222d18a73c2af5e",  # Physical Item Type
+        "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # Physical Item
+        "Category:OSW2c32802be59040248c85eda3479d484c",  # StatusEnumeration (deprecated, use TaskStatus)
+        "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4",  # TaskStatus
+        "Item:OSWf474ec34b7df451ea8356134241aef8a",  # State:Done
+        "Item:OSWa2b4567ad4874ea1b9adfed19a3d06d1",  # State:In work
+        "Item:OSWaa8d29404288446a9f3ec7afa4e2a512",  # State:To do
+        "Category:OSW65c8449bdd4f4fbcb7f68203a11d6e8f",  # Priority
+        "Item:OSW8743c7d03c4e46c1bd42bb05e1a082d9",  # High
+        "Item:OSW8d781c35212548fa9b2fccad3765da65",  # Medium
+        "Item:OSWcaf7db070ad6407babc5245e84d76840",  # Low
+        "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool
+        "Category:OSWb97757b46edb430591758662c18d354d",  # Event
+        "Category:OSW5433f882b9f14dca81994e058c8ab4a0",  # ToolMaintenanceEvent
         "Category:OSW0c69914a29b74f3c9e9d9ff7a6880715",  # Shipment - moved from lab
         "Category:OSW5be796e8a33c4567be1f31453fa747e8",  # Shipment service provider
         "Category:OSWf8bf7b1902d94125ad8c20590087c4f6",  # Shipment Status
@@ -159,6 +177,33 @@ package_meta_data = WorldMeta(
         "Item:OSWd8612de9ddfa4b19a575a0e9e7493fd0",  # Consumables
         "Item:OSWe3a3b9119028433d883910abd9189e01",  # Other
         "Template:Editor/Requirements",
+        # Process Properties (moved from core)
+        "Property:HasDate",
+        "Property:HasStartDate",
+        "Property:HasStartDateAndTime",
+        "Property:HasEndDate",
+        "Property:HasEndDateAndTime",
+        "Property:HasInput",
+        "Property:HasOutput",
+        "Property:HasParticipant",
+        "Property:HasTool",
+        # Physical Item Properties (moved from core)
+        "Property:HasSerialNumber",
+        "Property:HasInstructions",
+        "Property:HasManual",
+        "Property:HasTypeNumber",
+        "Property:HasManufacturer",
+        "Property:HasDataSheet",
+        "Property:HasSafetyDataSheet",
+        # Tool & MaintenanceEvent Properties (moved from core)
+        "Property:HasEvent",
+        "Property:HasSlot",
+        "Property:HasOccupant",
+        "Property:HasTarget",
+        "Property:HasAction",
+        "Property:HasTypeRestriction",
+        "Property:HasInitDate",
+        "Property:HasTypicalProcess",
         "Property:IsRelatedTo",
         "Property:HasPhoneNumber",
         "Property:HasApprover",

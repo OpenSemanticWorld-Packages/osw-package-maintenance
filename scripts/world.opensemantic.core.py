@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.56.0",
+    version="0.57.1",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -57,41 +57,29 @@ package_meta_data = WorldMeta(
         "Category:OSW93ccae36243542ceac6c951450a81d47",  # Characteristic
         "Category:OSWffe74f291d354037b318c422591c5023",  # CharacteristicType
         "Category:Item",
+        "Category:OSW6ef70c808fb54abbbacb059c285713d4",  # OntologyRelated
         "Category:OSW31a9c96c1f444f84b944d49afbce409b",  # PagePackage
         "Category:OSWb24f37ada8d043c194e7036df5d86b39",  # UserGroup
         "Item:OSW5335efe7928d49619412fe28363b5e8a",  # Administrators
         "Item:OSW2b28cfd4bf8446e586f0e90152127b4a",  # RegisteredUsers
         "Category:OSW8b3e627eb76b46d68fce3a12ff220c8e",  # UserAccount
         "Category:OSW379d5a1589c74c82bc0de47938264d00",  # OwlThing
+        "Category:OSW288260cd0728420c9f40ae1c5fa19111",  # Ontology
+        "Category:OSW662db0a2ad0946148422245f84e82f64",  # OwlOntology
+        "Category:OSW725a3cf5458f4daea86615fcbd0029f8",  # OwlClass
         "Category:OSW5f0dff1c477e45e7ad45e4e247e28f35",  # Documentation Extension
         "Category:OSW2ac4493f8635481eaf1db961b63c8325",  # Data
         "Category:OSWff333fd349af4f65a69100405a9e60c7",  # File
         "Category:OSW3e3f5dd4f71842fbb8f270e511af8031",  # LocalFile
         "Category:OSW05b244d0a669436e96fe4e1631d5a171",  # RemoteFile
         "Category:OSW11a53cdfbdc24524bf8ac435cbf65d9d",  # WikiFile => mwjson editor file upload schema
-        "Category:OSWc11438cd6c814ed1a5a253555ee351b4",  # ProcessType
-        "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
-        "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task => kanban board 
+        # NOTE: Process, Task, PhysicalItem, Tool, Event, Status, Priority
+        # categories + items moved to world.opensemantic.base
         "Category:OSWcbb09a36336740c6a2cd62db9bf647ec",  # IntangibleItem
-        "Category:OSWca99a9bb9ad24386b222d18a73c2af5e",  # Physical Item Type
-        "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # Physical Item
         "Category:OSWa5812d3b5119416c8da1606cbe7054eb",  # DefinedTerm (moved from base)
         "Category:OSW09f6cdd54bc54de786eafced5f675cbe",  # Keyword
         "Item:OSW452ec0273916478099c4716395e1bc18",  # Keyword: Classification category
         "Category:OSWd02741381aaa4709ae0753a0edc341ce",  # Enumeration
-        "Category:OSW2c32802be59040248c85eda3479d484c",  # StatusEnumeration (deprecated, use TaskStatus)
-        "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4",  # TaskStatus (required for
-        # Task/Kanban Board)
-        "Item:OSWf474ec34b7df451ea8356134241aef8a",  # State:Done
-        "Item:OSWa2b4567ad4874ea1b9adfed19a3d06d1",  # State:In work
-        "Item:OSWaa8d29404288446a9f3ec7afa4e2a512",  # State:To do
-        "Category:OSW65c8449bdd4f4fbcb7f68203a11d6e8f",  # Priority
-        "Item:OSW8743c7d03c4e46c1bd42bb05e1a082d9",  # High
-        "Item:OSW8d781c35212548fa9b2fccad3765da65",  # Medium
-        "Item:OSWcaf7db070ad6407babc5245e84d76840",  # Low
-        "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool (dependency for Process)
-        "Category:OSWb97757b46edb430591758662c18d354d",  # Event"
-        "Category:OSW5433f882b9f14dca81994e058c8ab4a0",  # ToolMaintenanceEvent
         "Template:Query/SlotAction",
         "Category:Property",
         "Category:AnnotationProperty",
@@ -122,26 +110,9 @@ package_meta_data = WorldMeta(
         # Statements
         "Property:HasUnitSymbol",
         "Property:Corresponds to",
-        # Process
-        "Property:HasDate",
-        "Property:HasStartDate",
-        "Property:HasStartDateAndTime",
-        "Property:HasEndDate",
-        "Property:HasEndDateAndTime",
-        "Property:HasInput",
-        "Property:HasOutput",
-        "Property:HasParticipant",
-        "Property:HasTool",
+        # NOTE: Process, Physical Item, Tool Properties moved to world.opensemantic.base
         # Item
         "Property:Visible to",
-        # Physical Item
-        "Property:HasSerialNumber",
-        "Property:HasInstructions",
-        "Property:HasManual",
-        "Property:HasTypeNumber",
-        "Property:HasManufacturer",
-        "Property:HasDataSheet",
-        "Property:HasSafetyDataSheet",
         # UserGroup and UserAccount
         "Property:HasGroupname",
         "Property:HasUsername",
@@ -149,16 +120,6 @@ package_meta_data = WorldMeta(
         "Property:HasId",
         "Property:HasUrl",
         "Property:HasVersion",
-        # Tool & MaintenanceEvent
-        "Property:HasEvent",
-        "Property:HasSlot",
-        "Property:HasOccupant",
-        # "Property:HasPurpose",
-        "Property:HasTarget",
-        "Property:HasAction",
-        "Property:HasTypeRestriction",
-        "Property:HasInitDate",
-        "Property:HasTypicalProcess",
         "Property:HasRange",  # Value range for ObjectProperty
         # Templates
         "Template:Helper/UI/Tiles/Grid",
