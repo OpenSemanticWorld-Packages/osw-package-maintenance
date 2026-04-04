@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.54.2",
+    version="0.56.0",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -53,6 +53,9 @@ package_meta_data = WorldMeta(
         "JsonSchema:WikiFile",
         "Category:Category",
         "Category:Entity",
+        # Characteristics (merged from world.opensemantic.characteristics.basic)
+        "Category:OSW93ccae36243542ceac6c951450a81d47",  # Characteristic
+        "Category:OSWffe74f291d354037b318c422591c5023",  # CharacteristicType
         "Category:Item",
         "Category:OSW31a9c96c1f444f84b944d49afbce409b",  # PagePackage
         "Category:OSWb24f37ada8d043c194e7036df5d86b39",  # UserGroup
@@ -156,6 +159,7 @@ package_meta_data = WorldMeta(
         "Property:HasTypeRestriction",
         "Property:HasInitDate",
         "Property:HasTypicalProcess",
+        "Property:HasRange",  # Value range for ObjectProperty
         # Templates
         "Template:Helper/UI/Tiles/Grid",
         "Template:Helper/UI/Tiles/Tile",

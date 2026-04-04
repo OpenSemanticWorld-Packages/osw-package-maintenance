@@ -1,8 +1,13 @@
+"""ARCHIVED: This package has been merged into world.opensemantic.core.
+All pages (Characteristic, CharacteristicType, OntologyRelated, Property:HasRange)
+are now maintained in scripts/world.opensemantic.core.py.
+"""
+
 from pathlib import Path
 
 from reusable import WorldCreat, WorldMeta
 
-# Provide information on the page package to be created
+# ARCHIVED — see world.opensemantic.core.py
 package_meta_data = WorldMeta(
     # Package name
     name="OSW Basic Characteristics",
@@ -17,7 +22,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Contains fundamental qualities"),
     # Specify the package version - use semantic versioning
-    version="0.1.0",
+    version="0.2.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -30,6 +35,7 @@ package_meta_data = WorldMeta(
         "Category:OSW93ccae36243542ceac6c951450a81d47",  # "Characteristic"
         "Category:OSWffe74f291d354037b318c422591c5023",  # "Characteristic Type"
         "Category:OSW6ef70c808fb54abbbacb059c285713d4",  # "Ontology related"
+        "Property:HasRange",  # Range property for ObjectProperty
     ],
 )
 # Provide the information needed (only) to create the page package
