@@ -434,9 +434,9 @@ def main():
     )
     parser.add_argument(
         "--mode",
-        choices=["unstaged", "staged", "commits"],
+        choices=["unstaged", "staged", "commits", "all"],
         required=True,
-        help="How to detect changed files",
+        help="How to detect changed files ('all' pushes every page in packages.json)",
     )
     parser.add_argument(
         "-n", "--num-commits",
@@ -476,6 +476,12 @@ def main():
         help="Push all slots for affected pages, not just changed slots",
     )
     parser.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="Limit number of pages to push (0 = unlimited, useful for testing)",
+    )
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Print verbose debug output",
@@ -495,7 +501,7 @@ def main():
         sys.exit(1)
 
     # Validate comment requirement
-    if args.mode in ("unstaged", "staged") and args.comment is None:
+    if args.mode in ("unstaged", "staged", "all") and args.comment is None:
         print(
             f"Error: --comment / -c is required for --mode {args.mode}",
             file=sys.stderr,
@@ -516,41 +522,60 @@ def main():
     if args.debug:
         print(f"  Content subdir: '{subdir}'")
 
-    # 4. Detect changed files (returns list of batches)
-    print(f"Detecting changes (mode: {args.mode}) ...")
-    batches = detect_changed_files(package_path, args.mode, args.num_commits)
-
-    # Build per-batch page mappings and determine edit comments
-    push_batches = []  # list of (pages_to_update, edit_comment, tree_or_None)
-    for batch in batches:
-        if not batch.changed and not batch.deleted:
-            continue
-
-        if args.debug:
-            if batch.changed:
-                print(f"  Changed files ({len(batch.changed)}):")
-                for f in batch.changed:
-                    print(f"    {f}")
-            if batch.deleted:
-                print(f"  Deleted files ({len(batch.deleted)}):")
-                for f in batch.deleted:
-                    print(f"    {f}")
-
+    # 4. Detect changed files or collect all pages
+    if args.mode == "all":
+        # Push every page in packages.json
+        print("Collecting all pages from packages.json ...")
+        all_files = list(urlpath_index.keys())
         pages_to_update = map_files_to_pages(
-            batch.changed, batch.deleted, urlpath_index, subdir
+            all_files, [], urlpath_index, "",
         )
-        if not pages_to_update:
-            continue
+        edit_comment = args.comment
+        push_batches = [(pages_to_update, edit_comment, None)]
+    else:
+        print(f"Detecting changes (mode: {args.mode}) ...")
+        batches = detect_changed_files(package_path, args.mode, args.num_commits)
 
-        edit_comment = args.comment if args.comment else batch.comment
-        if not edit_comment:
-            edit_comment = "[bot] update of page content"
+        # Build per-batch page mappings and determine edit comments
+        push_batches = []
+        for batch in batches:
+            if not batch.changed and not batch.deleted:
+                continue
 
-        push_batches.append((pages_to_update, edit_comment, batch.tree))
+            if args.debug:
+                if batch.changed:
+                    print(f"  Changed files ({len(batch.changed)}):")
+                    for f in batch.changed:
+                        print(f"    {f}")
+                if batch.deleted:
+                    print(f"  Deleted files ({len(batch.deleted)}):")
+                    for f in batch.deleted:
+                        print(f"    {f}")
+
+            pages_to_update = map_files_to_pages(
+                batch.changed, batch.deleted, urlpath_index, subdir
+            )
+            if not pages_to_update:
+                continue
+
+            edit_comment = args.comment if args.comment else batch.comment
+            if not edit_comment:
+                edit_comment = "[bot] update of page content"
+
+            push_batches.append((pages_to_update, edit_comment, batch.tree))
 
     if not push_batches:
         print("No changed files matched any pages in packages.json. Nothing to push.")
         sys.exit(0)
+
+    # Apply limit
+    if args.limit > 0:
+        limited_batches = []
+        for pages_to_update, edit_comment, tree in push_batches:
+            limited = dict(list(sorted(pages_to_update.items()))[:args.limit])
+            limited_batches.append((limited, edit_comment, tree))
+        push_batches = limited_batches
+        print(f"(Limited to {args.limit} page(s) per batch)")
 
     # 5. Print summary for all batches
     for idx, (pages_to_update, edit_comment, _tree) in enumerate(push_batches, 1):
