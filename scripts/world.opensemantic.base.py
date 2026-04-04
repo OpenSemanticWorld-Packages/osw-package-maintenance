@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.40.4",
+    version="0.40.5",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -177,6 +177,7 @@ package_meta_data = WorldMeta(
         "Property:HasEmail",
         "Property:HasDimensionlessRatio",
         "Property:HasProbabilityOfSuccessfulFunding",
+        "Property:HasMonetaryValue",
         "Property:HasBudget",
         "Property:HasWeightedBudget",
         "Property:HasAbbreviation",
