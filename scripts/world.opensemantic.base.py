@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides base items like Article, Person, Project"),
     # Specify the package version - use semantic versioning
-    version="0.41.0",
+    version="0.42.8",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.core",
@@ -68,6 +68,10 @@ package_meta_data = WorldMeta(
         "Category:OSW95efaf34e2c7439e8e7967233910e44b",  # Region
         "Category:OSWd845b96813a344458f140e48c4d063fd",  # DeviceType
         "Category:OSWf0fe562f422d49c6877490b3dfee2f3f",  # Device
+        "Category:OSWca99a9bb9ad24386b222d18a73c2af5e",  # Physical Item Type
+        "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # Physical Item
+        "Category:OSW182916df3eee472e88e7c8d114a7fe27",  # Material Type
+        "Category:OSW31ca9a739cb24079b36824045c0832aa",  # Material
         "Category:OSW0b6e695c4bb74e9ea5aa7f5da3150653",  # StrictParticipantsProcessType
         "Category:OSWfa0d5710bc0f45819b61b65fc4fd9656",  # StrictParticipantsProcess
         "Category:OSW1a271f289649413488e2841580e43a45",  # AdministrativeProcess
@@ -77,8 +81,6 @@ package_meta_data = WorldMeta(
         "Category:OSWc11438cd6c814ed1a5a253555ee351b4",  # ProcessType
         "Category:OSWe5aa96bffb1c4d95be7fbd46142ad203",  # Process
         "Category:OSWc5d4829ed2744a219ba027171c75fa1d",  # Task
-        "Category:OSWca99a9bb9ad24386b222d18a73c2af5e",  # Physical Item Type
-        "Category:OSW37a57741ae2e4dd4b29b1172b6848be8",  # Physical Item
         "Category:OSW2c32802be59040248c85eda3479d484c",  # StatusEnumeration (deprecated, use TaskStatus)
         "Category:OSW9725d7a91bab4f1aa68f423e4e9bfcf4",  # TaskStatus
         "Item:OSWf474ec34b7df451ea8356134241aef8a",  # State:Done
@@ -91,6 +93,7 @@ package_meta_data = WorldMeta(
         "Category:OSWe427aafafbac4262955b9f690a83405d",  # Tool
         "Category:OSWb97757b46edb430591758662c18d354d",  # Event
         "Category:OSW5433f882b9f14dca81994e058c8ab4a0",  # ToolMaintenanceEvent
+        "Category:OSWa2c8dd387d0b4a0c807a5a7bde190ba3",  # StandardOperatingProcedure
         "Category:OSW0c69914a29b74f3c9e9d9ff7a6880715",  # Shipment - moved from lab
         "Category:OSW5be796e8a33c4567be1f31453fa747e8",  # Shipment service provider
         "Category:OSWf8bf7b1902d94125ad8c20590087c4f6",  # Shipment Status

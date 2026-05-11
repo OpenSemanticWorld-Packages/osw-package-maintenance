@@ -19,7 +19,7 @@ package_meta_data = WorldMeta(
         "Provides core functionalities of OpenSemanticWorld / OpenSemanticLab"
     ),
     # Specify the package version - use semantic versioning
-    version="0.57.1",
+    version="0.57.6",
     # Specify the required MediaWiki extensions
     requiredExtensions=["OpenSemanticLab", "ExternalData", "WikiMarkdown"],
     # Specify the required PagePackages
@@ -121,6 +121,7 @@ package_meta_data = WorldMeta(
         "Property:HasUrl",
         "Property:HasVersion",
         "Property:HasRange",  # Value range for ObjectProperty
+        "Property:HasCharacteristic",  # Links entity to CharacteristicType
         # Templates
         "Template:Helper/UI/Tiles/Grid",
         "Template:Helper/UI/Tiles/Tile",

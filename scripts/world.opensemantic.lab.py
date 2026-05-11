@@ -17,10 +17,11 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("For material science, etc."),
     # Specify the package version - use semantic versioning
-    version="0.6.2",
+    version="0.8.1",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
+        "world.opensemantic.characteristics.quantitative",
     ],
     # Author(s)
     author=["Simon Stier", "Lukas Gold"],
@@ -28,8 +29,7 @@ package_meta_data = WorldMeta(
     # You can include a comment in the same line, stating the page label
     page_titles=[
         "Item:OSWd09a59874187410180d12004239898cd",  # world.opensemantic.lab
-        "Category:OSW182916df3eee472e88e7c8d114a7fe27",  # MaterialType
-        "Category:OSW31ca9a739cb24079b36824045c0832aa",  # Material
+        # MaterialType and Material moved to world.opensemantic.base
         "Category:OSW2afce49fe800460a95cf480cc0656757",  # ChemicalSubstanceType
         "Category:OSW0583b134c618484c9911a3dff145c7eb",  # ChemicalCompound
         "Category:OSW25ab317fa369435797b7a92c9fd3bde6",  # Sample type
@@ -45,6 +45,7 @@ package_meta_data = WorldMeta(
         "Category:OSWe2d16d21532a40cfa0abe577629d5c37",  # Test procedure
         "Category:OSWe0572f2791844010962886b892970b4d",  # Controlled environment
         "Category:OSW156137fa74914572ad2998f7f6594bca",  # DataDevice
+        "Category:OSW89fda9fed80b41b1ad4c0c011e645600",  # OpcUaServer
         "Property:HasCount",
         "Property:HasMass",
         "Property:HasVolume",
