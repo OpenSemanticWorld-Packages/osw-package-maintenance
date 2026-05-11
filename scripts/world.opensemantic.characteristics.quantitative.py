@@ -1,31 +1,205 @@
 import os
-
-# import pathlib
 import pickle
-
-# import re
-# import sys
+import uuid as uuid_module
+from logging import warning
 from pathlib import Path
 from typing import Dict
 
-# from osw.express import OswExpress
 from osw.auth import CredentialManager
-from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite  # , OverwriteOptions
-
-# from osw.utils.wiki import get_osw_id
-from quantities_units.main import (  # load_data,; update_local_osw,
-    create_smw_quantity_properties,
-    extract_data,
-    transform_data,
-)
+from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite
 from reusable import WorldCreat, WorldMeta
 
-# import osw
+from enriched_qudt import (
+    ENRICHED_QUDT_PATH,
+    _make_uuid,
+    load_enriched_qudt,
+    get_unit_prefix_entities,
+    get_quantity_unit_entities,
+    get_quantitykind_and_characteristics,
+    postprocess_jsondata_files,
+)
 
 
-# osw_obj = OswExpress(
-#    domain="wiki-dev.open-semantic-lab.org",  # cred_filepath=pwd_file_path
-# )
+def create_smw_quantity_properties(entities_dict: dict):
+    """Create SMW Quantity Properties from entities_dict."""
+    from osw.model import entity as model
+
+    entity_map = {}
+    ns_map = {
+        "fundamental_characteristics": "Category",
+        "characteristics": "Category",
+        "quantity_kinds": "Item",
+        "quantity_units": "Item",
+        "composed_prefix_quantity_units": "Item",
+        "prefixes": "Item",
+    }
+    for key, osw_obj_list in entities_dict.items():
+        ns = ns_map.get(key, "")
+        for entity in osw_obj_list:
+            iri = entity.get_iri()
+            entity_map[iri] = entity
+            # Also index with namespace prefix for __iris__ lookups
+            if ns and not iri.startswith(ns + ":"):
+                entity_map[f"{ns}:{iri}"] = entity
+
+    quantity_property_entities = {}
+    for osw_characteristic in entities_dict.get("fundamental_characteristics", []):
+        quantity_iri = osw_characteristic.__iris__.get("quantity")
+        osw_quantity = entity_map.get(quantity_iri)
+        if osw_quantity is None:
+            continue
+        unit_iris = sorted(osw_quantity.__iris__.get("units", []))
+        units = [entity_map[u] for u in unit_iris if u in entity_map]
+        sub_units = []
+        for u in units:
+            if hasattr(u, "prefix_units") and u.prefix_units is not None:
+                sub_units.extend(u.prefix_units)
+            if hasattr(u, "composed_units") and u.composed_units is not None:
+                sub_units.extend(u.composed_units)
+        units.extend(sub_units)
+
+        main_unit = None
+        other_units = []
+        for unit in units:
+            cf = getattr(unit, "conversion_factor_from_si", None)
+            if cf is not None and float(cf) == 1.0 and main_unit is None:
+                main_unit = unit
+            else:
+                other_units.append(unit)
+        if main_unit is None and len(other_units) == 1:
+            warning(
+                "Only one unit with conversion_factor != 1.0 for: "
+                + osw_characteristic.name + ". Using as main unit."
+            )
+            main_unit = other_units[0]
+            other_units = []
+        if main_unit is None and units:
+            warning("No main unit found for: " + osw_characteristic.name)
+            main_unit = units[0]
+            other_units = units[1:]
+        if main_unit is None:
+            continue
+
+        def _get_osw_id(entity):
+            osw_id = getattr(entity, "osw_id", None)
+            uuid_ = entity.get_uuid()
+            from_uuid = None if uuid_ is None else f"OSW{str(uuid_).replace('-', '')}"
+            return osw_id or from_uuid
+
+        additional_units = []
+        main_sub_units = []
+        if hasattr(main_unit, "prefix_units") and main_unit.prefix_units is not None:
+            main_sub_units.extend(main_unit.prefix_units)
+        if hasattr(main_unit, "composed_units") and main_unit.composed_units is not None:
+            main_sub_units.extend(main_unit.composed_units)
+        for pu in main_sub_units:
+            cf = getattr(pu, "conversion_factor_from_si", None)
+            if cf is None:
+                warning("No conversion factor for unit: " + str(pu.main_symbol))
+                continue
+            if float(cf) == 0:
+                warning(f"Conversion factor 0 for: {pu.main_symbol}")
+                continue
+            main_cf = float(main_unit.conversion_factor_from_si) if main_unit.conversion_factor_from_si else 0
+            # conversion_factor_to_main_unit * unit_value = main_unit_value
+            # e.g., 100 * 1 cm = 1 m → factor = main_cf / cf = 1.0 / 0.01 = 100
+            additional_units.append(model.Unit(
+                uuid=_make_uuid("smwunit:" + str(pu.uuid)),
+                name=pu.main_symbol,
+                main_symbol=pu.main_symbol,
+                conversion_factor_to_main_unit=(
+                    main_cf / float(cf) if float(cf) != 0 else None
+                ),
+            ))
+
+        for unit in other_units:
+            if not hasattr(unit, "main_symbol"):
+                continue
+            cf = getattr(unit, "conversion_factor_from_si", None)
+            if cf is None or float(cf) == 0:
+                continue
+            main_cf = float(main_unit.conversion_factor_from_si) if main_unit.conversion_factor_from_si else 0
+            additional_units.append(model.Unit(
+                uuid=_make_uuid("smwunit:" + str(getattr(unit, "uuid", unit.main_symbol))),
+                name=unit.main_symbol,
+                main_symbol=unit.main_symbol,
+                conversion_factor_to_main_unit=(
+                    main_cf / float(cf) if float(cf) != 0 else None
+                ),
+            ))
+
+        # Deduplicate by symbol and sort by conversion factor
+        seen = {main_unit.main_symbol}
+        deduped = []
+        for u in additional_units:
+            if u.main_symbol not in seen:
+                seen.add(u.main_symbol)
+                deduped.append(u)
+        additional_units = sorted(
+            deduped,
+            key=lambda u: (
+                float(u.conversion_factor_to_main_unit) if u.conversion_factor_to_main_unit else float("inf"),
+                u.main_symbol,
+            ),
+        )
+
+        prop_name = f"Has{osw_characteristic.name}Value"
+        title = f"Property:{prop_name}"
+        prop = model.MainQuantityProperty(
+            uuid=_make_uuid("property:" + osw_characteristic.name),
+            meta=model.Meta(
+                uuid=_make_uuid("meta:" + title),
+                wiki_page=model.WikiPage(title=prop_name, namespace="Property"),
+            ),
+            name=prop_name,
+            label=osw_characteristic.label,
+            description=osw_characteristic.description,
+            main_unit=model.Unit(
+                uuid=_make_uuid("smwunit:" + str(getattr(main_unit, "uuid", main_unit.main_symbol))),
+                name=main_unit.main_symbol,
+                main_symbol=main_unit.main_symbol,
+                conversion_factor_to_main_unit=1.0,
+            ),
+            additional_units=additional_units if additional_units else None,
+        )
+        quantity_property_entities[title] = prop
+
+    # Create SubQuantityProperty for non-fundamental characteristics
+    for osw_characteristic in entities_dict.get("characteristics", []):
+        prop_name = f"Has{osw_characteristic.name}Value"
+        title = f"Property:{prop_name}"
+
+        subclass_iris = osw_characteristic.__iris__.get("subclass_of", [])
+        broader_cat = subclass_iris[0] if subclass_iris else None
+        base_characteristic = entity_map.get(broader_cat)
+        base_property_title = None
+        if base_characteristic:
+            base_property_title = f"Property:Has{base_characteristic.name}Value"
+
+        if base_property_title is None:
+            continue
+
+        prop = model.SubQuantityProperty(
+            uuid=_make_uuid("property:" + osw_characteristic.name),
+            meta=model.Meta(
+                uuid=_make_uuid("meta:" + title),
+                wiki_page=model.WikiPage(title=prop_name, namespace="Property"),
+            ),
+            name=prop_name,
+            label=osw_characteristic.label,
+            description=osw_characteristic.description,
+            subproperty_of=base_property_title,
+            base_property=base_property_title,
+        )
+        quantity_property_entities[title] = prop
+
+    return quantity_property_entities
+
+
+# ---------------------------------------------------------------------------
+# Main script
+# ---------------------------------------------------------------------------
+
 wtsite = WtSite(
     WtSite.WtSiteConfig(
         iri="wiki-dev.open-semantic-lab.org",
@@ -36,59 +210,85 @@ wtsite = WtSite(
 )
 osw_obj = OSW(site=wtsite)
 
-# update_local_osw(osw_obj=osw_obj) # note: this fails in debugging mode due to working directory not being set correctly
+# Load required schemas — ComposedUnit first to ensure full Item inheritance
+osw_obj.fetch_schema(
+    OSW.FetchSchemaParam(
+        schema_title=[
+            "Category:OSW6c2aea028a8647cd97f5d7c65c09cd44",  # ComposedUnit (must be first)
+        ],
+        mode="replace",
+    )
+)
+osw_obj.fetch_schema(
+    OSW.FetchSchemaParam(
+        schema_title=[
+            "Category:OSW99e0f46a40ca4129a420b4bb89c4cc45",  # Unit prefix
+            "Category:OSWd2520fa016844e01af0097a85bb25b25",  # Quantity Unit
+            "Category:OSW00fbd6feecb5408997ca18d4e681a131",  # Quantity Kind
+            "Category:OSWffe74f291d354037b318c422591c5023",  # Characteristic Type
+            "Category:OSW4082937906634af992cf9a1b18d772cf",  # Quantity Value
+            "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7",  # Fundamental Quantity Value Type
+            "Category:OSWac07a46c2cf14f3daec503136861f5ab",  # Quantity Value Type
+            "Category:OSW1b15ddcf042c4599bd9d431cbfdf3430",  # Main Quantity Property
+            "Category:OSW69f251a900944602a08d1cca830249b5",  # Sub Quantity Property
+        ],
+        mode="append",
+    )
+)
 
-# cache = True
 cache = False
 cache_file = Path(__file__).parent / "list_of_osw_obj_dict.pickle"
 
 if cache and cache_file.exists():
-    # load pickle file
     with open(cache_file, "rb") as f:
         entities_dict = pickle.load(f)
-
 else:
-    # I: Extract Data
-    osw_ontology_instance = extract_data(debug=True)
-    # II: Transform Data
-    entities_dict = transform_data(osw_ontology=osw_ontology_instance)
+    # Load enriched QUDT data
+    data = load_enriched_qudt(ENRICHED_QUDT_PATH)
+    print(f"Loaded enriched QUDT: {len(data['graph'])} items")
 
-    # dump pickle file
+    # Create entities
+    prefix_entities = get_unit_prefix_entities(data)
+    print(f"Created {len(prefix_entities)} UnitPrefix entities")
+
+    non_composed, composed, unit_id_to_osw_id = get_quantity_unit_entities(data)
+    print(f"Created {len(non_composed)} QuantityUnit + {len(composed)} ComposedUnit entities")
+
+    # Build unit entities map (OSW ID -> entity) for characteristic creation
+    unit_entities_map = {}
+    for u in non_composed:
+        osw_id = f"Item:OSW{str(u.uuid).replace('-', '')}"
+        unit_entities_map[osw_id] = u
+    for u in composed:
+        osw_id = f"Item:OSW{str(u.uuid).replace('-', '')}"
+        unit_entities_map[osw_id] = u
+
+    qk_list, fund_chars, chars = get_quantitykind_and_characteristics(
+        data, unit_id_to_osw_id, unit_entities_map
+    )
+    print(
+        f"Created {len(qk_list)} QuantityKind, "
+        f"{len(fund_chars)} fundamental, {len(chars)} non-fundamental characteristics"
+    )
+
+    entities_dict = {
+        "prefixes": prefix_entities,
+        "quantity_units": non_composed,
+        "composed_prefix_quantity_units": composed,
+        "quantity_kinds": qk_list,
+        "fundamental_characteristics": fund_chars,
+        "characteristics": chars,
+    }
+
     with open(cache_file, "wb") as f:
         pickle.dump(entities_dict, f)
 
 quantity_property_entities = create_smw_quantity_properties(
-    list_of_osw_obj_dict=entities_dict
+    entities_dict=entities_dict
 )
 p_entities = list(quantity_property_entities.values())
 
-# list_of_osw_obj_dict["fundamental_characteristics"]["Category:OSWee9c7e5c343e542cb5a8b4648315902f"], # Length
-# list_of_osw_obj_dict["characteristics"]["Category:OSW24275b1c56ea58dcae38c44409251a64"], # Diameter
-
-# filter fundamental_characteristics and characteristics by name "Length" and "Diameter"
-c_entities = [
-    x for x in entities_dict["fundamental_characteristics"] if x.name == "Length"
-]
-c_entities += [x for x in entities_dict["characteristics"] if x.name == "Diameter"]
-c_entities += [x for x in entities_dict["characteristics"] if x.name == "Height"]
-c_entities += [x for x in entities_dict["characteristics"] if x.name == "Width"]
-
-# p_entities = [
-#     quantity_property_entities["Property:HasLengthValue"],
-#     quantity_property_entities["Property:HasDiameterValue"],
-#     quantity_property_entities["Property:HasHeightValue"],
-#     quantity_property_entities["Property:HasWidthValue"],
-# ]
-# print(p_entities)
-# osw_obj.store_entity( OSW.StoreEntityParam(entities=c_entities[0], overwrite=AddOverwriteClassOptions.replace_remote, namespace="Category", meta_category_title = "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7" ) )
-# osw_obj.store_entity( OSW.StoreEntityParam(entities=c_entities[1:4], overwrite=AddOverwriteClassOptions.replace_remote, namespace="Category",  meta_category_title = "Category:OSWac07a46c2cf14f3daec503136861f5ab" ) )
-# osw_obj.store_entity( OSW.StoreEntityParam(entities=p_entities, overwrite=AddOverwriteClassOptions.replace_remote,) )
-
 keys_to_keep = [
-    # "prefixes",
-    # "quantity_units",
-    # "composed_prefix_quantity_units",
-    # "quantity_kinds",
     "fundamental_characteristics",
     "characteristics",
 ]
@@ -98,17 +298,13 @@ entities_dict["properties"] = p_entities
 pages: Dict[str, WtPage] = {}
 
 for key, osw_obj_list in entities_dict.items():
-
-    # Define the namespace
     namespace = None
     meta_category_title = None
     if key == "fundamental_characteristics":
         namespace = "Category"
-        # FundamentalQuantityValueType
         meta_category_title = "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7"
     if key == "characteristics":
         namespace = "Category"
-        # QuantityValueType
         meta_category_title = "Category:OSWac07a46c2cf14f3daec503136861f5ab"
 
     pages = {
@@ -133,29 +329,10 @@ for p in pages.values():
 
 page_titles = [
     "Category:OSW4082937906634af992cf9a1b18d772cf",  # "Quantity Value",
-    # "Category:OSW7014422ed34957de9d4ca0fb6e3d74d3": "Page has no jsondata.",
-    # "Category:OSW7468741a399c52338e44a8242cfed871": "Page has no jsondata.",
-    # "Category:OSW76131090bf885b3b93394f5f4574e1a1": "Page has no jsondata.",
     "Category:OSWac07a46c2cf14f3daec503136861f5ab",  # "Quantity Value Type",
     "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7",  # "Fundamental Quantity Value Type",
 ]
-page_titles.extend(list(pages.keys()))
-
-# Generate python module
-# copy _model_generated.py to _model_py
-# cut and past 'Characteristic' and 'QuantityValue' classes to _static.py (update existing classes)
-# replace 'class PropertyType\(str, Enum\):((\r\n|\r|\n)[\s\S]*)UnitPrefix.update_forward_refs\(\)' with '' (remove core schemas)
-# replace '$\textit' with '$\\textit'
-# replace ' \underline with ' \\underline' and '$\underline with '$\\underline'
-# replace '^from [\s\S]*?(\r\n|\r|\n)' with '' (remove all imports)
-# replace '^# [\s\S]*?(\r\n|\r|\n)' with '' (remove all comments)
-# replace '^(\r\n|\r|\n){3,}' with '\n\n' (remove multiple empty lines)
-# replace '(Enum' with '(UnitEnum'
-# replace 'DimensionlessUnit._field' with 'DimensionlessUnit.dimensionless'
-# past imports at head of file:
-# from opensemantic.characteristics.quantitative._static import QuantityValue, UnitEnum
-# from typing import Any, Optional
-# from pydantic.v1 import Field
+page_titles.extend(sorted(pages.keys()))
 
 result_model_path = (
     Path(__file__).parent.parent
@@ -167,71 +344,27 @@ result_model_path = (
     / "quantitative"
     / "_model_generated.py"
 )
-# for i, p in enumerate(pages.values()):
-#     if i > 1:
-#         break
-#     print(f"{i}: {p.title} ({p.get_slot_content('jsonschema')})")
-# osw_obj.fetch_schema(fetchSchemaParam=OSW.FetchSchemaParam(
-#     schema_title=page_titles[:10000],
-#     offline_pages=pages,
-#     #result_model_path=Path(__file__).parent / "generated" / "schema.py",
-#     result_model_path=result_model_path,
-#     #mode="replace",
-#     mode="replace"
-# ))
-
-# # open result model path and remove repeating code
-# pattern = r"""
-#     ^\#\s*generated\s+by\s+datamodel-codegen:.*\n      # Match '# generated by datamodel-codegen:' line
-#     ^\#\s*filename:.*\n                                # Match '# filename:' line
-#     (?:\n)*                                            # Match any number of empty lines
-#     (?:from\s+\S+\s+import\s+.*\n)+                    # Match one or more 'from ... import ...' lines
-# """
-
-# # Compile the regex
-# regex = re.compile(pattern, flags=re.MULTILINE | re.VERBOSE)
-
-# # Read the content of the file
-# with open(result_model_path, 'r') as file:
-#     content = file.read()
-# # Remove the matched block
-# new_content = regex.sub('', content)
-# # Write the modified content back to a file
-# with open(result_model_path, 'w') as file:
-#     file.write(new_content)
 
 # Provide information on the page package to be created
 package_meta_data = WorldMeta(
-    # Package name
     name="OSW Quantitive Characteristics",
-    # Package repository name - usually the GitHub repository name
     repo="world.opensemantic.characteristics.quantitative",
-    # Package ID - usually the same as repo
     id="world.opensemantic.characteristics.quantitative",
-    # Package subdirectory - usually resembling parts of the package name
     subdir="base",
-    # Package branch - usually "main"
     branch="main",
-    # Provide a package description
     description=("Contains measureable qualitities based on (physical) quantities"),
-    # Specify the package version - use semantic versioning
-    version="0.2.5",
-    # Specify the required PagePackages
+    version="0.3.0",
     requiredPackages=[
         "world.opensemantic.quantities",
     ],
-    # Author(s)
-    author=["Andreas Räder", "Matthias Albert Popp", "Simon Stier"],
-    # List the full page titles of the pages to be included in the package
-    # You can include a comment in the same line, stating the page label
+    author=["Andreas Räder", "Matthias Albert Popp", "Simon Stier", "Lukas Gold"],
     page_titles=page_titles,
 )
-# Provide the information needed (only) to create the page package
 package_creation_config = WorldCreat(
-    # Specify the path to the working directory - where the package is stored on disk
     working_dir=Path(__file__).parents[1] / "packages" / package_meta_data.repo,
     offline_pages=pages,
-    generate_python_code=True,
+    generate_python_code=False,  # handled by tools/osw-python-package-generator
+    generate_package_documentation_page=True,
     python_code_working_dir=(
         Path(__file__).parents[1]
         / "python_packages"
@@ -243,19 +376,13 @@ package_creation_config = WorldCreat(
 )
 
 if __name__ == "__main__":
-    # Create the page package
     package_meta_data.create(
         creation_config=package_creation_config,
     )
-    # Check if all required pages are present
+    postprocess_jsondata_files(package_creation_config.working_dir)
     package_meta_data.check_required_pages(
         params=WorldMeta.CheckRequiredPagesParams(
             creation_config=package_creation_config,
-            # Enable the following line to use the package creation script for the
-            #  check of listed pages in the requiredPackages instead of the
-            #  package.json (which is only up-to-date after the execution of the
-            #  package creation script)
             read_listed_pages_from_script=False,
-            # script_dir=Path(__file__).parent,
         )
     )
