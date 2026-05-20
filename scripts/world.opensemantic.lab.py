@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("For material science, etc."),
     # Specify the package version - use semantic versioning
-    version="0.8.1",
+    version="0.9.0",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
@@ -32,7 +32,7 @@ package_meta_data = WorldMeta(
         # MaterialType and Material moved to world.opensemantic.base
         "Category:OSW2afce49fe800460a95cf480cc0656757",  # ChemicalSubstanceType
         "Category:OSW0583b134c618484c9911a3dff145c7eb",  # ChemicalCompound
-        "Category:OSW25ab317fa369435797b7a92c9fd3bde6",  # Sample type
+        "Category:OSW25ab317fa369435797b7a92c9fd3bde6",  # MaterialSampletype
         "Category:OSW5c6f6eaaa96e4f84ad6f2ea02fc18ce4",  # Sampling
         "Category:OSW88894b63a51d46b08b5b4b05a6b1b3c3",  # MaterialSample
         "Category:OSW29f0a4619cc243679e68b682d3bdb890",  # GeoSample
@@ -46,17 +46,22 @@ package_meta_data = WorldMeta(
         "Category:OSWe0572f2791844010962886b892970b4d",  # Controlled environment
         "Category:OSW156137fa74914572ad2998f7f6594bca",  # DataDevice
         "Category:OSW89fda9fed80b41b1ad4c0c011e645600",  # OpcUaServer
+        "Category:OSWdd31b71b06915d0182e40d15953f3daa",  # Measurement Device
+        "Category:OSW8a43ad2381fc44e382bff2ada5e1f67f",  # Tool setup
+        "Category:OSWa4d7cfe85cc3498e87d7825efa831d65",  # Data Collection Process
         "Property:HasCount",
         "Property:HasMass",
         "Property:HasVolume",
         "Property:HasMassConcentration",
-        "Property:HasMonetaryValue",
+        # "Property:HasMonetaryValue",  # already part of base
         "Property:HasGravimetricMonetaryValue",
         "Property:HasPricePerWeight",
         "Property:HasVolumetricMonetaryValue",
         "Property:HasPricePerVolume",
         "Property:HasPerUnitMonetaryValue",
         "Property:HasPricePerUnit",
+        # Newly added:
+        "Property:HasRawData",
     ],
 )
 # Provide the information needed (only) to create the page package
