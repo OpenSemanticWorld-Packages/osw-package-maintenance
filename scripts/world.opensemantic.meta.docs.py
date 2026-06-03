@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides core documentation of OpenSemanticWorld / -Lab"),
     # Specify the package version - use semantic versioning
-    version="0.8.2",
+    version="0.8.3",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
@@ -48,6 +48,11 @@ package_meta_data = WorldMeta(
         "Item:OSW8bccb1f0123f47d1831a1348ecbe63cc",  # About this platform
         "Item:OSWd25678c7abf9484d8e80ea5c295bb9c6",  # How to use the graph tool
         "Item:OSW92619b0700984fe7913e5fbbd7f194dc",  # OSW Special Editors and Viewer
+        # Files created by legacy file upload via screenshot insertion
+        # Required for "How to use the graph tool"
+        "File:About_this_platform_-_graph_default_view.png",
+        "File:About_this_platform_-_Graph_right-click_menu.png",
+        "File:Exploring_the_graph_of_About_this_platform.png",
     ],
 )
 # Provide the information needed (only) to create the page package
