@@ -17,7 +17,7 @@ package_meta_data = WorldMeta(
     # Provide a package description
     description=("Provides core documentation of OpenSemanticWorld / -Lab"),
     # Specify the package version - use semantic versioning
-    version="0.8.1",
+    version="0.8.2",
     # Specify the required PagePackages
     requiredPackages=[
         "world.opensemantic.base",
@@ -31,7 +31,7 @@ package_meta_data = WorldMeta(
         "Item:OSW8a9c73cba7c64234bda71e1b682a641c",  # OpenSemanticLab for end users
         "Item:OSWae8546dad40e487fa837db9c5ab07a5f",  # OpenSemanticLab for advanced users
         "Item:OSWe0cbdc9c1e0e4a53b21bd83e6c6d99ad",  # OpenSemanticLab for developers
-        "Item:OSW70b4d6464c1d44a887eb86e3b39b8751",  # StructedDataWorkshop
+        "Item:OSW70b4d6464c1d44a887eb86e3b39b8751",  # StructuredDataWorkshop
         "Item:OSWf1df064239044b8fa3c968339fb93344",  # JsonTutorial
         "Item:OSWf4a9514baed04859a4c6c374a7312f10",  # JsonSchemaTutorial
         "Item:OSW911488771ea449a6a34051f8213d7f2f",  # JsonLdTutorial
