@@ -149,15 +149,25 @@ Workflow:
 - Run `python scripts/sync_package_tags.py --packages <name> --apply` to create git tags from version history
 - Push tags with `git push origin --tags` from within the package submodule
 
+## Wiki Push Workflow
+
+1. Edit schema files locally
+2. Dry-run: `python scripts/push_package_changes.py packages/<name> --mode unstaged --dry-run`
+3. Push staged: `python scripts/push_package_changes.py packages/<name> --mode staged -c "description"`
+4. Verify on wiki
+5. Bump version in packages.json, build script, and page package Item
+6. Push page package Item to wiki
+7. Commit to git, tag, push with tags
+
 ## Python Code Generation
 
-The generator (`tools/osw-python-package-generator/`) produces Pydantic v1 and v2 models from wiki JSON schemas.
+The generator (`tools/osw-python-package-generator/`) produces Pydantic v1 and v2 models from JSON schemas.
 
 Key settings (in `oold-python/src/oold/generator.py`):
-- `use_title_as_name=True` — schema `title` becomes Python class name
-- `reuse_model=True` — identical schemas should produce one class (has known limitations with cross-file resolution)
-- `allof_class_hierarchy=Always` — `allOf` produces Python inheritance
-- `field_include_all_keys=True` — custom keywords preserved in `json_schema_extra`
+- `use_title_as_name=True` - schema `title` becomes Python class name
+- `reuse_model=True` - identical schemas should produce one class (has known limitations with cross-file resolution)
+- `allof_class_hierarchy=Always` - `allOf` produces Python inheritance
+- `field_include_all_keys=True` - custom keywords preserved in `json_schema_extra`
 
 ### Known Code Generator Limitations
 
@@ -167,14 +177,14 @@ Key settings (in `oold-python/src/oold/generator.py`):
 
 ## Cross-Package Dependencies
 
-### Core → Base Boundary
+### Core - Base Boundary
 
 5 core schemas reference 6 base schemas via `range`/`category`:
-- ProcessType → Person
-- Task → IssueLabel, Project, WorkPackage
-- PhysicalItemType → OrganizationalUnit
-- Process → Location, Person, Project
-- File → Person
+- ProcessType - Person
+- Task - IssueLabel, Project, WorkPackage
+- PhysicalItemType - OrganizationalUnit
+- Process - Location, Person, Project
+- File - Person
 
 These 6 direct dependencies pull in 20 base schemas transitively (Person -> PersonRole, Competence, etc.), which is why the core Python package contains ~120 classes instead of the expected ~38. Process-related schemas (ProcessType, Process, Task, PhysicalItemType, PhysicalItem, Tool, StatusEnumeration, TaskStatus, Priority, ToolMaintenanceEvent) were moved from core to base to reduce this coupling.
 
@@ -239,30 +249,128 @@ This checks if the category page exists AND has jsondata, which is a more reliab
 
 ### Watch Variables in Autocomplete Queries
 
-Use `$(variable_name)` syntax (not `{{variable_name}}`) for watch variable substitution in autocomplete queries:
+The autocomplete query string is processed in three steps by `MwJson_editor.js search_smw`:
+
+1. **`{{$(key)}}` replacement**: replaced with `{{watched_path}}`, then resolved by Handlebars from jsondata
+2. **`$(key)` replacement**: replaced with the **resolved watch value** directly (no Handlebars). Undefined values become `+` (SMW wildcard)
+3. **Handlebars evaluation**: the query is compiled as a Handlebars template with jsondata as context
+
+Built-in Handlebars variables: `{{_user_input}}`, `{{_user_input_normalized}}`, `{{_user_lang}}`.
+
+**When to use which form:**
+
+- `{{field}}` - when the field exists directly in the page's jsondata (e.g., `{{quantity}}` on a FundamentalQuantityValueType instance that has `quantity` in its jsondata)
+- `$(watch_var)` - when the value comes from a watch path, especially from `root.*` paths (e.g., `$(parent_w)` watching `root.subclass_of.0`)
+- `{{$(watch_var)}}` - **required inside array item schemas** where the watch uses a relative path via an `id` anchor. Handlebars cannot resolve these from the root jsondata; the `{{$()}}` substitution first resolves the watch variable, then Handlebars processes the result.
+
+**Array-relative watch paths with `id` anchors:**
+
+Inside array `items`, set `"id": "<anchor>"` to create a named reference point. Watch paths can then use `<anchor>.<field>` to reference sibling fields within the same array element:
 
 ```json
 {
-    "watch": { "characteristic_w": "channel.characteristic" },
-    "options": {
-        "autocomplete": {
-            "query": "[[-HasUnit.-HasQuantity::$(characteristic_w)]][[HasSymbol::like:*{{_user_input}}*]]|?HasSymbol=label"
+    "data_channels": {
+        "type": "array",
+        "items": {
+            "id": "channel",
+            "properties": {
+                "characteristic": { "type": "string", "format": "autocomplete" },
+                "unit": {
+                    "watch": { "characteristic_w": "channel.characteristic" },
+                    "options": {
+                        "autocomplete": {
+                            "query": "[[-HasUnit.-HasQuantity::{{$(characteristic_w)}}]][[HasSymbol::like:*{{_user_input}}*]]|?HasSymbol=label"
+                        }
+                    }
+                }
+            }
         }
     }
 }
 ```
 
-`{{_user_input}}` is a special built-in variable for the current autocomplete text input.
+Here `channel.characteristic` resolves to the `characteristic` field of the **current** array element (not `root.data_channels.?.characteristic`, which is not supported). The `{{$(characteristic_w)}}` form is needed because Handlebars alone cannot resolve the watch variable - it only has access to the root jsondata context.
 
-## Wiki Push Workflow
+### Template-time vs Editor-time Variables
 
-1. Edit schema files locally
-2. Dry-run: `python scripts/push_package_changes.py packages/<name> --mode unstaged --dry-run`
-3. Push staged: `python scripts/push_package_changes.py packages/<name> --mode staged -c "description"`
-4. Verify on wiki
-5. Bump version in packages.json, build script, and page package Item
-6. Push page package Item to wiki
-7. Commit to git, tag, push with tags
+See full documentation: https://opensemantic.world/wiki/Item:OSWab674d663a5b472f838d8e1eb43e6784
+
+Two distinct variable scopes exist:
+
+**Schema template variables** (resolved when a Category page is saved, producing the static jsonschema via `slot_schema_template.text`):
+- `{{{_current_subject_}}}` - title/OSW-ID of the current page/entry (preferred)
+- `{{{_page_title}}}` - deprecated, use `_current_subject_` instead
+- `{{{name}}}`, `{{{uuid}}}`, `{{{label}}}`, etc. - jsondata fields of the Category
+- `{{{subclass_of.[0]}}}` - first entry of the subclass_of array
+- `{{> self}}` - template itself as partial (enables recursion)
+
+**Editor-time variables** (resolved at runtime when a user edits an instance):
+- `{{{_current_subject_}}}` - the page being edited (in `dynamic_template` context)
+- `{{{_current_user_}}}` - active user identity (e.g., `User:MyUserName`)
+- `{{{_array_index_}}}` - array item position within parent
+- `{{{_global_index_}}}` - smallest non-existing prefixed index for property values
+- `$(watch_var)` - watch variable substitution (from `"watch": {"watch_var": "root.field"}`)
+- `{{_user_input}}` - current text in an autocomplete input field
+- `{{_user_input_normalized}}` - normalized user input for query matching
+- `{{_user_lang}}` - current user language preference
+- `root.field.0` - can be used in watch paths to reference array elements
+
+### Autocomplete Query Shortcuts
+
+The editor supports shorthand keywords for common autocomplete patterns:
+
+- **`category`**: populates field with instances of the given category (and subcategories)
+  ```json
+  { "options": { "autocomplete": { "category": "Category:X" } } }
+  ```
+- **`subclassof_range`**: targets subclasses of the given category. The inline editor uses the meta class of the given category.
+  ```json
+  { "options": { "autocomplete": { "subclassof_range": "Category:Device" } } }
+  ```
+- **Custom `query`**: full SMW query with handlebars template variables
+
+Autocomplete automatically appends `|?Display_title_of=label|?HasImage=image|?HasDescription=description|limit=100` unless user-specified.
+
+### SMW Inverse Property Chains
+
+In SMW property chain syntax, `-PropertyName` means inverse (follow the link backwards). Chain direction reads right-to-left from the query value:
+
+`[[-HasUnit.-HasQuantity.-SubClassOf::X]]` reads as:
+- X <- SubClassOf <- R (R is what X is a subclass of)
+- R <- HasQuantity <- Q (Q is the QuantityKind that R has)
+- Q <- HasUnit <- P (P is a Unit of Q) - P is the result
+
+Common patterns for finding units of a characteristic's parent:
+```json
+{
+    "watch": { "parent_w": "root.subclass_of.0" },
+    "options": {
+        "autocomplete": {
+            "query": "[[-HasUnit.-HasQuantity::$(parent_w)]][[HasSymbol::like:*{{_user_input}}*]]OR[[-HasUnit.-HasQuantity.-SubClassOf::$(parent_w)]][[HasSymbol::like:*{{_user_input}}*]]OR[[-HasUnit.-HasQuantity.-SubClassOf.-SubClassOf::$(parent_w)]][[HasSymbol::like:*{{_user_input}}*]]|?HasSymbol=label"
+        }
+    }
+}
+```
+
+Note: The first OR clause queries the parent directly (it may have HasQuantity itself). Subsequent clauses traverse the inverse SubClassOf chain upward. SMW has query depth limits - 3 levels of `-SubClassOf` nesting is typically the maximum before hitting wiki restrictions.
+
+### Undocumented Behaviors (not in online docs)
+
+These behaviors were discovered empirically and are not yet in the official documentation:
+
+1. **`subclassof_range` does not include the category itself** in query results - only subclasses. To include the category page itself, add an explicit `OR` clause: `[[:Category:OSW...]]OR[[SubClassOf::Category:OSW...]]`
+
+2. **Watch path array indexing**: `"root.subclass_of.0"` accesses the first element of an array field. This is not documented but works in practice.
+
+3. **SMW query depth limits**: Inverse property chains with more than ~3 levels of nesting (`-SubClassOf.-SubClassOf.-SubClassOf`) hit wiki query depth/size restrictions. The wiki returns an error about query conditions that could not be considered. Keep chains to 3 levels maximum.
+
+4. **`{{{_page_title}}}`** is deprecated in schema templates - use `{{{_current_subject_}}}` instead. Both resolve to the Category page title at template evaluation time.
+
+5. **`format: "table"`** on array properties renders items in a compact table layout instead of the default collapsible "Category 1", "Category 2" headers which create visual overhead.
+
+6. **`$comment`** is preserved in JSON Schema but ignored by the editor and code generator. Use it for documentation purposes within schemas.
+
+7. **`options.hidden: true`** hides a property from the default editor view. Useful for deprecated fields that should not be removed (to avoid breaking existing data) but should not be shown to users.
 
 ## Python Code Generation Workflow
 
