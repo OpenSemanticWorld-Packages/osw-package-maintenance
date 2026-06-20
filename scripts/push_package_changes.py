@@ -18,6 +18,7 @@ Usage examples:
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, Union
@@ -156,7 +157,9 @@ def detect_changed_files(
         return [_Batch(sorted(changed), sorted(deleted), "", None)]
 
     if mode == "staged":
-        changed, deleted = _collect_diff_paths(repo.index.diff("HEAD"))
+        # R=True so the diff reads HEAD -> index: staged additions report as
+        # "A"/changed (not "D"), modifications as "M", removals as "D".
+        changed, deleted = _collect_diff_paths(repo.index.diff("HEAD", R=True))
         return [_Batch(sorted(changed), sorted(deleted), "", None)]
 
     # mode == "commits"
@@ -189,6 +192,35 @@ def _strip_subdir(file_path: str, subdir: str) -> str:
     return file_path.replace("\\", "/")
 
 
+# Matches a slot file name like 'OSW....slot_jsondata.json' or
+# 'Name.slot_schema_template.text'. The page name is non-greedy so it stops at
+# the first '.slot_'; the slot name may contain underscores.
+_SLOT_FILE_RE = re.compile(
+    r"^(?P<name>.+?)\.slot_(?P<slot>.+)\.(?:json|wikitext|text)$"
+)
+
+
+def derive_page_from_path(relative_path: str) -> Optional[Tuple[str, str]]:
+    """Derive (page_title, slot_name) from a package-relative slot file path.
+
+    Used for pages not (yet) listed in packages.json - e.g. brand-new pages
+    whose slot files exist locally but have never been pushed. Expects the
+    layout '<Namespace>/[<subpath>/]<name>.slot_<slot>.<ext>'. Returns None if
+    the path is not a slot file under a known namespace dir.
+    """
+    parts = relative_path.split("/")
+    if len(parts) < 2:
+        return None
+    namespace = parts[0]
+    if namespace not in NAMESPACE_DIRS:
+        return None
+    match = _SLOT_FILE_RE.match(parts[-1])
+    if not match:
+        return None
+    page_name = "/".join(parts[1:-1] + [match.group("name")])
+    return f"{namespace}:{page_name}", match.group("slot")
+
+
 def map_files_to_pages(
     changed_files: List[str],
     deleted_files: List[str],
@@ -214,6 +246,29 @@ def map_files_to_pages(
             }
         return pt
 
+    def _register_derived(page_title: str, slot_name: str,
+                          relative_path: str, deleted: bool) -> None:
+        """Map a slot file of a page absent from packages.json (new page).
+
+        Builds a synthetic page_entry carrying the slot file paths so push_pages
+        can read them (main via 'urlPath', others via slots[<name>]['urlPath']).
+        """
+        if page_title not in pages_to_update:
+            pages_to_update[page_title] = {
+                "page_entry": {"slots": {}},
+                "changed_slots": set(),
+                "deleted_slots": set(),
+                "new_page": True,
+            }
+        entry = pages_to_update[page_title]
+        if slot_name == "main":
+            entry["page_entry"]["urlPath"] = relative_path
+        else:
+            entry["page_entry"].setdefault("slots", {})[slot_name] = {
+                "urlPath": relative_path
+            }
+        entry["deleted_slots" if deleted else "changed_slots"].add(slot_name)
+
     for file_path in changed_files:
         relative_path = _strip_subdir(file_path, subdir)
         if relative_path in urlpath_index:
@@ -221,7 +276,11 @@ def map_files_to_pages(
             pt = _ensure_page(info)
             pages_to_update[pt]["changed_slots"].add(info["slot_name"])
         else:
-            unmapped_files.append(file_path)
+            derived = derive_page_from_path(relative_path)
+            if derived is None:
+                unmapped_files.append(file_path)
+            else:
+                _register_derived(derived[0], derived[1], relative_path, False)
 
     for file_path in deleted_files:
         relative_path = _strip_subdir(file_path, subdir)
@@ -230,7 +289,11 @@ def map_files_to_pages(
             pt = _ensure_page(info)
             pages_to_update[pt]["deleted_slots"].add(info["slot_name"])
         else:
-            unmapped_files.append(file_path)
+            derived = derive_page_from_path(relative_path)
+            if derived is None:
+                unmapped_files.append(file_path)
+            else:
+                _register_derived(derived[0], derived[1], relative_path, True)
 
     if unmapped_files:
         print(
@@ -316,7 +379,8 @@ def print_batch_summary(
             parts.append(", ".join(sorted(info["changed_slots"])))
         if info["deleted_slots"]:
             parts.append("DEL: " + ", ".join(sorted(info["deleted_slots"])))
-        print(f"    {page_title}  [{'; '.join(parts)}]")
+        tag = " (new)" if info.get("new_page") else ""
+        print(f"    {page_title}{tag}  [{'; '.join(parts)}]")
 
 
 def push_pages(
