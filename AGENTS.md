@@ -536,9 +536,55 @@ For a one-off custom quantity not destined for QUDT, a random `uuid4` is fine.
 
 ## Migration Scripts
 
-For bulk data changes on the wiki, create scripts in `scripts/` using the osw-python API:
+For one-off bulk data changes on the wiki, write a script in `scripts/` using the osw-python API:
 - `WtSite` + `CredentialManager` for auth
 - `page.get_slot_content("jsondata")` returns dict
 - `page.set_slot_content("jsondata", dict)` + `page.edit(comment="...")` to write
 - Always default to dry-run mode (`--execute` flag to apply)
 - Credentials file: `scripts/accounts.pwd.yaml` (imported via `reusable.py`)
+
+### Versioned migrations (`scripts/migrations/`)
+
+When a schema-version bump changes the shape of existing instance data, write a
+versioned migration on the shared framework `scripts/migrations/migration_base.py`.
+Its `run_migration(...)` provides the CLI, wiki connection, instance querying,
+the per-page loop, dry-run handling, and a summary; each script only supplies
+the data transform.
+
+**How it works** - `run_migration(*, description, default_categories, default_comment, migrate_page)`:
+1. Parses CLI flags: `--execute` (default is dry-run), `-d/--domain` (default
+   wiki-dev), `--cred-file`, `--categories` (override the query), `--pages`
+   (explicit titles, skips the SMW query), `-c/--comment`.
+2. Connects via `WtSite` + `CredentialManager`.
+3. Collects target pages: SMW-queries each category (`[[Category:...]]`, which
+   includes subcategories) for instances and dedupes them - or uses `--pages`.
+4. For each page: `get_page` then `migrate_page(page, title)`; if it returns
+   True, `page.edit(comment=...)` - but only when `--execute`.
+5. Prints a `Modified / Skipped / Errors` summary; exit code is non-zero on errors.
+
+**How to create one:**
+1. Name it `migrate_<package>_<fromver>-<fromsha>_to_<tover>-<tosha>.py`.
+2. Module docstring: state source and target version + commit, the exact field
+   changes, and any prerequisite migrations (e.g. run base-package migrations first).
+3. Define `DEFAULT_CATEGORIES` (Category IRIs whose instances to migrate) and
+   `DEFAULT_COMMENT` (edit summary).
+4. Define `migrate_page(page, page_title) -> bool`:
+   - `jd = page.get_slot_content("jsondata")`; guard `isinstance(jd, dict)`.
+   - Mutate `jd` in place. Make it **idempotent** - only touch data still in the
+     old shape, and return `False` when nothing needs changing (so re-runs are
+     safe and unchanged pages are reported as skipped).
+   - On change: `page.set_slot_content("jsondata", jd)` and `return True`.
+5. Entry point:
+   ```python
+   if __name__ == "__main__":
+       sys.exit(run_migration(
+           description=__doc__.split("\n")[0],
+           default_categories=DEFAULT_CATEGORIES,
+           default_comment=DEFAULT_COMMENT,
+           migrate_page=migrate_page,
+       ))
+   ```
+
+Run the dry-run first (default), review the planned edits, then `--execute`.
+Migrations query instances via SMW, so run them after the new schema package is
+pushed.
