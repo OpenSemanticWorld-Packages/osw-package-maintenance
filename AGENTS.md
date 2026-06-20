@@ -63,6 +63,18 @@ Rules for inline `title`:
 - Use PascalCase, no spaces (it becomes the Python class name directly)
 - Make it specific to the context: `MaterialConstituent` not `Constituent`, `InstitutePostalAddress` not `PostalAddress`
 - Empty `"title": ""` is worse than no title — it causes unpredictable naming. Always set a meaningful value.
+- When two inline sub-objects in different schemas share the same human-friendly name (e.g., both called "Factor"), set a context-specific PascalCase `title` to distinguish them for code generation, and move the original display name to `title*` so it's still shown in the wiki editor:
+```json
+{
+  "items": {
+    "title": "QuantityUnitFactor",
+    "title*": {"en": "Factor", "de": "Faktor"},
+    "type": "object",
+    "properties": { ... }
+  }
+}
+```
+Without distinct `title` values, the code generator produces numbered collisions like `Factor` and `Factor1`.
 
 ### Shared Schemas via `$ref`
 
@@ -159,6 +171,11 @@ Workflow:
 6. Push page package Item to wiki
 7. Commit to git, tag, push with tags
 
+Notes:
+- **New pages** (not yet in `packages.json`): `push_package_changes.py` derives the page title and slots from the file path, so brand-new pages push correctly. `git add` them and use `--mode staged`. **Push new pages BEFORE rebuilding the package** - the build's `create()` (with `prefer_local_pages=False`) deletes the package subdir and re-fetches from the wiki, which wipes local-only pages.
+- **Other wikis / credentials**: `-d <domain>` selects the target wiki; `--cred-filepath <path>` points at a specific `accounts.pwd.yaml`.
+- **Protected namespaces** (often `Category`): the push account needs the right that `$wgNamespaceProtection` requires; for a bot login the matching **bot-password grant** must also be set (effective rights = user rights AND bot-password grants). Otherwise create the page manually.
+
 ## Python Code Generation
 
 The generator (`tools/osw-python-package-generator/`) produces Pydantic v1 and v2 models from JSON schemas.
@@ -168,6 +185,8 @@ Key settings (in `oold-python/src/oold/generator.py`):
 - `reuse_model=True` - identical schemas should produce one class (has known limitations with cross-file resolution)
 - `allof_class_hierarchy=Always` - `allOf` produces Python inheritance
 - `field_include_all_keys=True` - custom keywords preserved in `json_schema_extra`
+
+The generator auto-downloads the upstream `*-python` dependency packages from GitHub (latest tag) for class deduplication, so no local sibling checkout is required. It requires `osw>=1.1.2` - earlier versions corrupt the generated `# filename:` header comments, rewriting the OSW-ID to the class name (e.g. `# filename: OSW<id>.json` becomes `# filename: <ClassName>.json`).
 
 ### Known Code Generator Limitations
 
@@ -404,6 +423,116 @@ python_packages/opensemantic.<name>-python/
 ### Deduplication across packages
 
 The generator removes classes that already exist in dependency packages and replaces them with imports. For example, `opensemantic.base-python` imports `Entity`, `Item`, `Category` etc. from `opensemantic.core-python` instead of regenerating them.
+
+## Adding a New Custom Quantity
+
+A custom quantity (one NOT in QUDT, e.g. a derived/slope quantity) needs four
+artifacts, created bottom-up. Worked example: "Steigung der Wärmeleitfähigkeit"
+(slope of a thermal conductance over time, unit `W/(K·h)`) in a project package.
+
+This is the proper path when the quantity has a **new dimension/unit**. (If you
+only need a unit variant of an existing fundamental quantity - e.g. a pressure
+limit in bar - don't do all this: just `subclass_of` the existing characteristic
+and override `default_unit`, reusing its `unit_enumeration`.)
+
+### Reference category/type OSW-IDs
+
+| Role | Type to put in the page's `type` (or `subclass_of`/`metaclass`) |
+|------|------|
+| Unit (composed) | `Category:OSW6c2aea028a8647cd97f5d7c65c09cd44` |
+| Scaled/prefixed unit subobject (in `composed_units`) | `Category:OSW6ef70c808fb54abbbacb059c285713d4` |
+| QuantityKind | `Category:OSW00fbd6feecb5408997ca18d4e681a131` |
+| Characteristic (FundamentalQuantityValueType) | `type`: `Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7` |
+| Characteristic parent | `subclass_of`: `Category:OSW4082937906634af992cf9a1b18d772cf` |
+| Characteristic metaclass (holds the schema template) | `metaclass`: `Category:OSWac07a46c2cf14f3daec503136861f5ab` |
+| Quantity Property | `Category:OSW1b15ddcf042c4599bd9d431cbfdf3430` |
+
+Common base unit Items: Watt `Item:OSW58b03da1b2d35d8ca09043abb7fc8870`,
+Kelvin `Item:OSWe728730c00ea5cf9af66a550e51b9717`,
+Metre `Item:OSWf101d25e944856e3bd4b4c9863db7de2`,
+Second `Item:OSW85302b21cf045998b80f38c9fdb88f84`,
+Hour `Item:OSWa58b950af5d658e7b8bc2e1736817e43`.
+
+### 1. Unit(s) - Item
+
+Model the **SI-coherent base unit** (`conversion_factor_from_si: 1.0`) with
+`factor_units` built from **named QUDT unit Items** (W, K, s, ... - not a
+base-unit decomposition; that matches every existing composed unit). Add
+non-coherent units (e.g. per-hour) and metric prefixes as scaling subobjects in
+a `composed_units` array, each with its own `conversion_factor_from_si`,
+`main_symbol`, `ucum_codes`, and `factor_units`. `conversion_factor_from_si` =
+how many SI base units are in one of this unit (product of the factor units'
+factors ^ exponents; e.g. `W/(K·h)` = `1·1·3600⁻¹` = `1/3600`).
+
+A scaling subobject's `osw_id` is `Item:OSW<base>#OSW<sub>`.
+
+### 2. Quantity - Item (QuantityKind)
+
+`type: [Category:OSW00fbd6feecb5408997ca18d4e681a131]`, with
+`units: [Item:OSW<base unit>]`.
+
+### 3. Characteristic - Category (FundamentalQuantityValueType)
+
+```json
+{
+  "type": ["Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7"],
+  "subclass_of": ["Category:OSW4082937906634af992cf9a1b18d772cf"],
+  "metaclass": ["Category:OSWac07a46c2cf14f3daec503136861f5ab"],
+  "quantity": "Item:OSW<quantitykind>",
+  "default_unit": "Item:OSW<base>#OSW<sub>",
+  "unit_enumeration": [{"osw_id": "...", "name": "...", "symbol": "..."}],
+  "quantity_property": "Property:Has<Name>Value"
+}
+```
+The `slot_jsonschema.json` is generated by the metaclass template on save -
+push the jsondata and let the wiki regenerate it, then pull it back. The
+editor `default_unit` may be a non-SI unit (the template supports this).
+
+### 4. Property - Property
+
+`type: [Category:OSW1b15ddcf042c4599bd9d431cbfdf3430]`, `property_type: "Quantity"`,
+`main_unit` = the SI unit (`conversion_factor_to_main_unit: "1.0"`), plus
+`additional_units` (factor = this-unit number / main-unit number; e.g. `W/(K·h)`
+relative to main `W/(K·s)` = `3600`).
+
+### Slots per page
+
+Item/Property: `slot_jsondata.json` + `slot_main.wikitext` (empty) +
+`slot_header.wikitext` (`{{#invoke:Entity|header}}`) +
+`slot_footer.wikitext` (`{{#invoke:Entity|footer}}`). Category additionally has
+`slot_jsonschema.json`.
+
+### UUIDs
+
+Stable, reproducible UUIDs are `uuid5(uuid.NAMESPACE_URL, <canonical string>)`
+(`scripts/enriched_qudt.py::_make_uuid`):
+- Unit: the full IRI, e.g. `http://qudt.org/vocab/unit/W-PER-K`
+- Factor-unit subobject: `{unit_curie}#factorUnit#{factor_curie}#{exp}` (e.g. `unit:W-PER-K#factorUnit#unit:W#1`)
+- QuantityKind: `http://qudt.org/vocab/quantitykind/<Name>`
+- Characteristic: `characteristic:` + the QK IRI
+- Property: `property:` + name
+
+For a one-off custom quantity not destined for QUDT, a random `uuid4` is fine.
+
+### Build, push, release
+
+1. Add the four page titles to the package build script's `page_titles`.
+2. **Push the new pages to the wiki BEFORE running the schema build.** Use
+   `push_package_changes.py --mode staged` - it supports pages not yet in
+   `packages.json` (derives the page from the file path). Reason: the schema
+   build's `create()` with `prefer_local_pages=False` **deletes the package
+   subdir and re-fetches from the wiki**, which would wipe local-only pages.
+   - The `Category` namespace is often protected. The push account (and its
+     **bot-password grant**, separately) needs the right `$wgNamespaceProtection`
+     requires; otherwise create the Category page manually.
+3. Bump the version (build script `version=` and the page-package Item) - minor
+   bump for new schemas.
+4. Run the build script to regenerate `packages.json` and push the page-package
+   Item to the wiki (now non-destructive, since the pages exist on the wiki).
+5. Commit the schema package, tag `vX.Y.Z`, push (commit + tag).
+6. Regenerate the Python package (`<pkg>-python.py`): the generator downloads
+   the schema by tag, so the tag must be pushed first. Commit, tag
+   `v<schema>.post<build>`, push.
 
 ## Migration Scripts
 
