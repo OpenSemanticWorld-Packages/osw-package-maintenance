@@ -22,7 +22,13 @@ from enriched_qudt import (
 
 def create_smw_quantity_properties(entities_dict: dict):
     """Create SMW Quantity Properties from entities_dict."""
-    from osw.model import entity as model
+    from opensemantic.core.v1 import (
+        MainQuantityProperty,
+        Meta,
+        SubQuantityProperty,
+        Unit,
+        WikiPage,
+    )
 
     entity_map = {}
     ns_map = {
@@ -103,7 +109,7 @@ def create_smw_quantity_properties(entities_dict: dict):
             main_cf = float(main_unit.conversion_factor_from_si) if main_unit.conversion_factor_from_si else 0
             # conversion_factor_to_main_unit * unit_value = main_unit_value
             # e.g., 100 * 1 cm = 1 m → factor = main_cf / cf = 1.0 / 0.01 = 100
-            additional_units.append(model.Unit(
+            additional_units.append(Unit(
                 uuid=_make_uuid("smwunit:" + str(pu.uuid)),
                 name=pu.main_symbol,
                 main_symbol=pu.main_symbol,
@@ -119,7 +125,7 @@ def create_smw_quantity_properties(entities_dict: dict):
             if cf is None or float(cf) == 0:
                 continue
             main_cf = float(main_unit.conversion_factor_from_si) if main_unit.conversion_factor_from_si else 0
-            additional_units.append(model.Unit(
+            additional_units.append(Unit(
                 uuid=_make_uuid("smwunit:" + str(getattr(unit, "uuid", unit.main_symbol))),
                 name=unit.main_symbol,
                 main_symbol=unit.main_symbol,
@@ -145,16 +151,16 @@ def create_smw_quantity_properties(entities_dict: dict):
 
         prop_name = f"Has{osw_characteristic.name}Value"
         title = f"Property:{prop_name}"
-        prop = model.MainQuantityProperty(
+        prop = MainQuantityProperty(
             uuid=_make_uuid("property:" + osw_characteristic.name),
-            meta=model.Meta(
+            meta=Meta(
                 uuid=_make_uuid("meta:" + title),
-                wiki_page=model.WikiPage(title=prop_name, namespace="Property"),
+                wiki_page=WikiPage(title=prop_name, namespace="Property"),
             ),
             name=prop_name,
             label=osw_characteristic.label,
             description=osw_characteristic.description,
-            main_unit=model.Unit(
+            main_unit=Unit(
                 uuid=_make_uuid("smwunit:" + str(getattr(main_unit, "uuid", main_unit.main_symbol))),
                 name=main_unit.main_symbol,
                 main_symbol=main_unit.main_symbol,
@@ -179,11 +185,11 @@ def create_smw_quantity_properties(entities_dict: dict):
         if base_property_title is None:
             continue
 
-        prop = model.SubQuantityProperty(
+        prop = SubQuantityProperty(
             uuid=_make_uuid("property:" + osw_characteristic.name),
-            meta=model.Meta(
+            meta=Meta(
                 uuid=_make_uuid("meta:" + title),
-                wiki_page=model.WikiPage(title=prop_name, namespace="Property"),
+                wiki_page=WikiPage(title=prop_name, namespace="Property"),
             ),
             name=prop_name,
             label=osw_characteristic.label,
@@ -210,31 +216,7 @@ wtsite = WtSite(
 )
 osw_obj = OSW(site=wtsite)
 
-# Load required schemas — ComposedUnit first to ensure full Item inheritance
-osw_obj.fetch_schema(
-    OSW.FetchSchemaParam(
-        schema_title=[
-            "Category:OSW6c2aea028a8647cd97f5d7c65c09cd44",  # ComposedUnit (must be first)
-        ],
-        mode="replace",
-    )
-)
-osw_obj.fetch_schema(
-    OSW.FetchSchemaParam(
-        schema_title=[
-            "Category:OSW99e0f46a40ca4129a420b4bb89c4cc45",  # Unit prefix
-            "Category:OSWd2520fa016844e01af0097a85bb25b25",  # Quantity Unit
-            "Category:OSW00fbd6feecb5408997ca18d4e681a131",  # Quantity Kind
-            "Category:OSWffe74f291d354037b318c422591c5023",  # Characteristic Type
-            "Category:OSW4082937906634af992cf9a1b18d772cf",  # Quantity Value
-            "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7",  # Fundamental Quantity Value Type
-            "Category:OSWac07a46c2cf14f3daec503136861f5ab",  # Quantity Value Type
-            "Category:OSW1b15ddcf042c4599bd9d431cbfdf3430",  # Main Quantity Property
-            "Category:OSW69f251a900944602a08d1cca830249b5",  # Sub Quantity Property
-        ],
-        mode="append",
-    )
-)
+# Models loaded from opensemantic.* packages via enriched_qudt.py
 
 cache = False
 cache_file = Path(__file__).parent / "list_of_osw_obj_dict.pickle"
@@ -248,10 +230,12 @@ else:
     print(f"Loaded enriched QUDT: {len(data['graph'])} items")
 
     # Create entities
-    prefix_entities = get_unit_prefix_entities(data)
+    prefix_entities, prefix_id_to_osw_id = get_unit_prefix_entities(data)
     print(f"Created {len(prefix_entities)} UnitPrefix entities")
 
-    non_composed, composed, unit_id_to_osw_id = get_quantity_unit_entities(data)
+    non_composed, composed, unit_id_to_osw_id = get_quantity_unit_entities(
+        data, prefix_id_to_osw_id=prefix_id_to_osw_id
+    )
     print(f"Created {len(non_composed)} QuantityUnit + {len(composed)} ComposedUnit entities")
 
     # Build unit entities map (OSW ID -> entity) for characteristic creation
@@ -353,7 +337,7 @@ package_meta_data = WorldMeta(
     subdir="base",
     branch="main",
     description=("Contains measureable qualitities based on (physical) quantities"),
-    version="0.4.1",
+    version="0.5.2",
     requiredPackages=[
         "world.opensemantic.quantities",
     ],

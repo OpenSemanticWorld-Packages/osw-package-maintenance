@@ -466,6 +466,27 @@ factors ^ exponents; e.g. `W/(K·h)` = `1·1·3600⁻¹` = `1/3600`).
 
 A scaling subobject's `osw_id` is `Item:OSW<base>#OSW<sub>`.
 
+**Unit naming policy (pint round-trip).** A unit's name (and the matching
+`unit_enumeration[].name` on the characteristic, which becomes the generated enum
+member / `x-enum-varname`) must be written **numerator(s) first, then
+denominators, with multiple denominators ordered alphabetically** - the same
+canonical order pint produces. Order the unit's `factor_units` the same way
+(numerator exponents first, then negative exponents alphabetically by unit name).
+
+- correct: `watt_per_hour_per_kelvin` (W / (h·K), `h` before `k`)
+- correct: `watt_per_kelvin_per_second` (W / (K·s), `k` before `s`)
+- wrong: `watt_per_kelvin_per_hour`
+
+This is required for `from_pint`/round-trip conversion: `from_pint` formats the
+pint quantity with pint's **LaTeX siunitx notation** (the `:Lx` / `#Lx` format
+option) and derives the unit symbol from that string (`_normalize_pint_unit_symbol`).
+That formatter emits the denominators in a fixed canonical (alphabetical) order, so
+the derived symbol - and therefore the enum member name it is looked up by in the
+shared `unit_registry` - must follow the same order. A different order means the
+lookup misses and `from_pint`/`to_unit` fail, even though `to_pint` still works.
+(Single-unit and single-denominator quantities never hit this; it only affects
+composed units with two or more denominators.)
+
 ### 2. Quantity - Item (QuantityKind)
 
 `type: [Category:OSW00fbd6feecb5408997ca18d4e681a131]`, with

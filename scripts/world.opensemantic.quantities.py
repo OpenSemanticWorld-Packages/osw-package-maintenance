@@ -1,10 +1,9 @@
-import os
 from pathlib import Path
 from typing import Dict
 
 from osw.auth import CredentialManager
 from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite
-from reusable import WorldCreat, WorldMeta
+from reusable import CRED_FILEPATH_DEFAULT, WorldCreat, WorldMeta
 
 from enriched_qudt import (
     ENRICHED_QUDT_PATH,
@@ -20,48 +19,23 @@ from enriched_qudt import (
 # Main script
 # ---------------------------------------------------------------------------
 
-wtsite = WtSite(
-    WtSite.WtSiteConfig(
-        iri="wiki-dev.open-semantic-lab.org",
-        cred_mngr=CredentialManager(
-            cred_filepath=os.path.join(os.path.dirname(__file__), "accounts.pwd.yaml")
-        ),
-    )
-)
+wtsite = WtSite(WtSite.WtSiteConfig(
+    iri="wiki-dev.open-semantic-lab.org",
+    cred_mngr=CredentialManager(cred_filepath=CRED_FILEPATH_DEFAULT),
+))
 osw_obj = OSW(site=wtsite)
-
-# Load required schemas — ComposedUnit first to ensure full Item inheritance
-osw_obj.fetch_schema(
-    OSW.FetchSchemaParam(
-        schema_title=[
-            "Category:OSW6c2aea028a8647cd97f5d7c65c09cd44",  # ComposedUnit (must be first)
-        ],
-        mode="replace",
-    )
-)
-osw_obj.fetch_schema(
-    OSW.FetchSchemaParam(
-        schema_title=[
-            "Category:OSW99e0f46a40ca4129a420b4bb89c4cc45",  # Unit prefix
-            "Category:OSWd2520fa016844e01af0097a85bb25b25",  # Quantity Unit
-            "Category:OSW00fbd6feecb5408997ca18d4e681a131",  # Quantity Kind
-            "Category:OSW4082937906634af992cf9a1b18d772cf",  # Quantity Value
-            "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7",  # Fundamental Quantity Value Type
-            "Category:OSWac07a46c2cf14f3daec503136861f5ab",  # Quantity Value Type
-        ],
-        mode="append",
-    )
-)
 
 # Load enriched QUDT data
 data = load_enriched_qudt(ENRICHED_QUDT_PATH)
 print(f"Loaded enriched QUDT: {len(data['graph'])} items")
 
 # Create entities
-prefix_entities = get_unit_prefix_entities(data)
+prefix_entities, prefix_id_to_osw_id = get_unit_prefix_entities(data)
 print(f"Created {len(prefix_entities)} UnitPrefix entities")
 
-non_composed, composed, unit_id_to_osw_id = get_quantity_unit_entities(data)
+non_composed, composed, unit_id_to_osw_id = get_quantity_unit_entities(
+    data, prefix_id_to_osw_id=prefix_id_to_osw_id
+)
 print(f"Created {len(non_composed)} QuantityUnit + {len(composed)} ComposedUnit entities")
 
 # Build unit entities map for QK creation
@@ -106,6 +80,14 @@ for p in pages.values():
         del jd["meta"]
     p.set_slot_content("jsondata", jd)
 
+# Manual units not in QUDT - fetch from wiki and add to pages dict
+manual_unit_titles = [
+    "Item:OSW5fa029d9deec4286b3c11a3c4ba33215",  # Thomson (Th) - mass-to-charge ratio
+]
+for title in manual_unit_titles:
+    manual_page = wtsite.get_page(WtSite.GetPageParam(titles=[title])).pages[0]
+    pages[title] = manual_page
+
 page_titles = [
     "Category:OSW99e0f46a40ca4129a420b4bb89c4cc45",  # "Unit prefix"
     "Category:OSWd2520fa016844e01af0097a85bb25b25",  # "Quantity Unit"
@@ -124,7 +106,7 @@ package_meta_data = WorldMeta(
     subdir="base",
     branch="main",
     description=("Contains fundamental (physical) quantities, units and prefixes"),
-    version="0.2.0",
+    version="0.4.0",
     requiredPackages=[
         "world.opensemantic.core",
     ],
