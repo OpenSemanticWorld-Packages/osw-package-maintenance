@@ -5,19 +5,18 @@ from logging import warning
 from pathlib import Path
 from typing import Dict
 
-from osw.auth import CredentialManager
-from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite
-from reusable import WorldCreat, WorldMeta
-
 from enriched_qudt import (
     ENRICHED_QUDT_PATH,
     _make_uuid,
-    load_enriched_qudt,
-    get_unit_prefix_entities,
     get_quantity_unit_entities,
     get_quantitykind_and_characteristics,
+    get_unit_prefix_entities,
+    load_enriched_qudt,
     postprocess_jsondata_files,
 )
+from osw.auth import CredentialManager
+from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite
+from reusable import WorldCreat, WorldMeta
 
 
 def create_smw_quantity_properties(entities_dict: dict):
@@ -69,7 +68,8 @@ def create_smw_quantity_properties(entities_dict: dict):
         if main_unit is None and len(other_units) == 1:
             warning(
                 "Only one unit with conversion_factor != 1.0 for: "
-                + osw_characteristic.name + ". Using as main unit."
+                + osw_characteristic.name
+                + ". Using as main unit."
             )
             main_unit = other_units[0]
             other_units = []
@@ -90,7 +90,10 @@ def create_smw_quantity_properties(entities_dict: dict):
         main_sub_units = []
         if hasattr(main_unit, "prefix_units") and main_unit.prefix_units is not None:
             main_sub_units.extend(main_unit.prefix_units)
-        if hasattr(main_unit, "composed_units") and main_unit.composed_units is not None:
+        if (
+            hasattr(main_unit, "composed_units")
+            and main_unit.composed_units is not None
+        ):
             main_sub_units.extend(main_unit.composed_units)
         for pu in main_sub_units:
             cf = getattr(pu, "conversion_factor_from_si", None)
@@ -100,17 +103,23 @@ def create_smw_quantity_properties(entities_dict: dict):
             if float(cf) == 0:
                 warning(f"Conversion factor 0 for: {pu.main_symbol}")
                 continue
-            main_cf = float(main_unit.conversion_factor_from_si) if main_unit.conversion_factor_from_si else 0
+            main_cf = (
+                float(main_unit.conversion_factor_from_si)
+                if main_unit.conversion_factor_from_si
+                else 0
+            )
             # conversion_factor_to_main_unit * unit_value = main_unit_value
             # e.g., 100 * 1 cm = 1 m → factor = main_cf / cf = 1.0 / 0.01 = 100
-            additional_units.append(model.Unit(
-                uuid=_make_uuid("smwunit:" + str(pu.uuid)),
-                name=pu.main_symbol,
-                main_symbol=pu.main_symbol,
-                conversion_factor_to_main_unit=(
-                    main_cf / float(cf) if float(cf) != 0 else None
-                ),
-            ))
+            additional_units.append(
+                model.Unit(
+                    uuid=_make_uuid("smwunit:" + str(pu.uuid)),
+                    name=pu.main_symbol,
+                    main_symbol=pu.main_symbol,
+                    conversion_factor_to_main_unit=(
+                        main_cf / float(cf) if float(cf) != 0 else None
+                    ),
+                )
+            )
 
         for unit in other_units:
             if not hasattr(unit, "main_symbol"):
@@ -118,15 +127,23 @@ def create_smw_quantity_properties(entities_dict: dict):
             cf = getattr(unit, "conversion_factor_from_si", None)
             if cf is None or float(cf) == 0:
                 continue
-            main_cf = float(main_unit.conversion_factor_from_si) if main_unit.conversion_factor_from_si else 0
-            additional_units.append(model.Unit(
-                uuid=_make_uuid("smwunit:" + str(getattr(unit, "uuid", unit.main_symbol))),
-                name=unit.main_symbol,
-                main_symbol=unit.main_symbol,
-                conversion_factor_to_main_unit=(
-                    main_cf / float(cf) if float(cf) != 0 else None
-                ),
-            ))
+            main_cf = (
+                float(main_unit.conversion_factor_from_si)
+                if main_unit.conversion_factor_from_si
+                else 0
+            )
+            additional_units.append(
+                model.Unit(
+                    uuid=_make_uuid(
+                        "smwunit:" + str(getattr(unit, "uuid", unit.main_symbol))
+                    ),
+                    name=unit.main_symbol,
+                    main_symbol=unit.main_symbol,
+                    conversion_factor_to_main_unit=(
+                        main_cf / float(cf) if float(cf) != 0 else None
+                    ),
+                )
+            )
 
         # Deduplicate by symbol and sort by conversion factor
         seen = {main_unit.main_symbol}
@@ -138,7 +155,9 @@ def create_smw_quantity_properties(entities_dict: dict):
         additional_units = sorted(
             deduped,
             key=lambda u: (
-                float(u.conversion_factor_to_main_unit) if u.conversion_factor_to_main_unit else float("inf"),
+                float(u.conversion_factor_to_main_unit)
+                if u.conversion_factor_to_main_unit
+                else float("inf"),
                 u.main_symbol,
             ),
         )
@@ -155,7 +174,9 @@ def create_smw_quantity_properties(entities_dict: dict):
             label=osw_characteristic.label,
             description=osw_characteristic.description,
             main_unit=model.Unit(
-                uuid=_make_uuid("smwunit:" + str(getattr(main_unit, "uuid", main_unit.main_symbol))),
+                uuid=_make_uuid(
+                    "smwunit:" + str(getattr(main_unit, "uuid", main_unit.main_symbol))
+                ),
                 name=main_unit.main_symbol,
                 main_symbol=main_unit.main_symbol,
                 conversion_factor_to_main_unit=1.0,
@@ -252,7 +273,9 @@ else:
     print(f"Created {len(prefix_entities)} UnitPrefix entities")
 
     non_composed, composed, unit_id_to_osw_id = get_quantity_unit_entities(data)
-    print(f"Created {len(non_composed)} QuantityUnit + {len(composed)} ComposedUnit entities")
+    print(
+        f"Created {len(non_composed)} QuantityUnit + {len(composed)} ComposedUnit entities"
+    )
 
     # Build unit entities map (OSW ID -> entity) for characteristic creation
     unit_entities_map = {}
@@ -283,9 +306,7 @@ else:
     with open(cache_file, "wb") as f:
         pickle.dump(entities_dict, f)
 
-quantity_property_entities = create_smw_quantity_properties(
-    entities_dict=entities_dict
-)
+quantity_property_entities = create_smw_quantity_properties(entities_dict=entities_dict)
 p_entities = list(quantity_property_entities.values())
 
 keys_to_keep = [
@@ -350,7 +371,7 @@ package_meta_data = WorldMeta(
     name="OSW Quantitive Characteristics",
     repo="world.opensemantic.characteristics.quantitative",
     id="world.opensemantic.characteristics.quantitative",
-    subdir="base",
+    subdir="quantitative",
     branch="main",
     description=("Contains measureable qualitities based on (physical) quantities"),
     version="0.4.1",

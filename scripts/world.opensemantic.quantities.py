@@ -2,19 +2,17 @@ import os
 from pathlib import Path
 from typing import Dict
 
+from enriched_qudt import (
+    ENRICHED_QUDT_PATH,
+    get_quantity_unit_entities,
+    get_quantitykind_and_characteristics,
+    get_unit_prefix_entities,
+    load_enriched_qudt,
+    postprocess_jsondata_files,
+)
 from osw.auth import CredentialManager
 from osw.core import OSW, AddOverwriteClassOptions, WtPage, WtSite
 from reusable import WorldCreat, WorldMeta
-
-from enriched_qudt import (
-    ENRICHED_QUDT_PATH,
-    load_enriched_qudt,
-    get_unit_prefix_entities,
-    get_quantity_unit_entities,
-    get_quantitykind_and_characteristics,
-    postprocess_jsondata_files,
-)
-
 
 # ---------------------------------------------------------------------------
 # Main script
@@ -62,7 +60,9 @@ prefix_entities = get_unit_prefix_entities(data)
 print(f"Created {len(prefix_entities)} UnitPrefix entities")
 
 non_composed, composed, unit_id_to_osw_id = get_quantity_unit_entities(data)
-print(f"Created {len(non_composed)} QuantityUnit + {len(composed)} ComposedUnit entities")
+print(
+    f"Created {len(non_composed)} QuantityUnit + {len(composed)} ComposedUnit entities"
+)
 
 # Build unit entities map for QK creation
 unit_entities_map = {}
@@ -121,7 +121,7 @@ package_meta_data = WorldMeta(
     name="OSW Quantities",
     repo="world.opensemantic.quantities",
     id="world.opensemantic.quantities",
-    subdir="base",
+    subdir="quantities",
     branch="main",
     description=("Contains fundamental (physical) quantities, units and prefixes"),
     version="0.2.0",

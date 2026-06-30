@@ -11,7 +11,7 @@ package_meta_data = WorldMeta(
     # Package ID - usually the same as repo
     id="world.opensemantic.demo.lab.virtual",
     # Package subdirectory - usually resembling parts of the package name
-    subdir="base",
+    subdir="virtual",
     # Package branch - usually "main"
     branch="main",
     # Provide a package description

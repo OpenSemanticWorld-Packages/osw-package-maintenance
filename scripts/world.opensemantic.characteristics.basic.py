@@ -16,7 +16,7 @@ package_meta_data = WorldMeta(
     # Package ID - usually the same as repo
     id="world.opensemantic.characteristics.basic",
     # Package subdirectory - usually resembling parts of the package name
-    subdir="base",
+    subdir="basic",
     # Package branch - usually "main"
     branch="main",
     # Provide a package description
