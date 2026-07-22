@@ -71,3 +71,9 @@
 [submodule ".\\tools\\qudt-parsing"]
 	path = .\\tools\\qudt-parsing
 	url = https://github.com/OpenSemanticWorld-Packages/qudt-parsing
+[submodule "python_packages/opensemantic.quantities-python"]
+	path = python_packages/opensemantic.quantities-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.quantities-python
+[submodule "python_packages/opensemantic.batteries-python"]
+	path = python_packages/opensemantic.batteries-python
+	url = https://github.com/OpenSemanticWorld-Packages/opensemantic.batteries-python
