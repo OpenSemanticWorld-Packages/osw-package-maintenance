@@ -80,10 +80,10 @@ for p in pages.values():
         del jd["meta"]
     p.set_slot_content("jsondata", jd)
 
-# Manual units not in QUDT - fetch from wiki and add to pages dict
-manual_unit_titles = [
-    "Item:OSW5fa029d9deec4286b3c11a3c4ba33215",  # Thomson (Th) - mass-to-charge ratio
-]
+# Manual units not in QUDT - fetch from wiki and add to pages dict.
+# Thomson (Th) used to be listed here; it is now generated from the
+# "add_units" section of patches.json instead.
+manual_unit_titles = []
 for title in manual_unit_titles:
     manual_page = wtsite.get_page(WtSite.GetPageParam(titles=[title])).pages[0]
     pages[title] = manual_page
@@ -106,7 +106,7 @@ package_meta_data = WorldMeta(
     subdir="base",
     branch="main",
     description=("Contains fundamental (physical) quantities, units and prefixes"),
-    version="0.4.0",
+    version="0.6.0",
     requiredPackages=[
         "world.opensemantic.core",
     ],

@@ -9,8 +9,28 @@ import json
 import uuid as uuid_module
 from pathlib import Path
 
+from opensemantic.core.v1 import Description, Label
+from opensemantic.quantities.v1 import (
+    ComposedUnit,
+    ComposedUnitElement,
+    PrefixUnit,
+    QuantityKind,
+    QuantityUnit,
+    UnitPrefix,
+)
 from osw.utils.strings import pascal_case
 from osw.utils.wiki import get_full_title
+
+try:
+    from opensemantic.characteristics.quantitative.v1 import (
+        FundamentalQuantityValueType,
+        QuantityValueType,
+        UnitEnumerationElement,
+    )
+except (ImportError, SyntaxError):
+    FundamentalQuantityValueType = None
+    QuantityValueType = None
+    UnitEnumerationElement = None
 
 
 ENRICHED_QUDT_PATH = (
@@ -32,8 +52,18 @@ PATCHES_PATH = (
 # Symbol overrides for enum name generation. Extended by patches.json at load time.
 SYMBOL_OVERRIDES = {"一": "unitless", "#": "dimensionless", "%": "percent", "pH": "pH_value"}
 
+# Full URI -> fixed UUID, for units whose identifier must match a page that
+# already exists on a wiki. Filled from patches.json at load time.
+UUID_OVERRIDES = {}
+
+# IRIs of units synthesized from patches.json rather than taken from QUDT.
+# They must not claim an exact_ontology_match, because no such QUDT term exists.
+SYNTHETIC_UNITS = set()
+
 
 def _make_uuid(uri: str) -> str:
+    if uri in UUID_OVERRIDES:
+        return UUID_OVERRIDES[uri]
     return str(uuid_module.uuid5(namespace=uuid_module.NAMESPACE_URL, name=uri))
 
 
@@ -62,52 +92,34 @@ def _get_values(inp, key: str) -> list:
 
 
 def _get_labels(item: dict) -> list:
-    """Extract labels from rdfs:label, returns list of model.Label."""
-    import opensemantic.core as _core
-    import opensemantic.quantities as _quantities
-    import opensemantic.characteristics.quantitative as _char_quant
-    import types
-    model = types.SimpleNamespace(
-        **{k: v for m in [_core, _quantities, _char_quant]
-           for k, v in vars(m).items() if not k.startswith("_")}
-    )
-
+    """Extract labels from rdfs:label, returns list of Label."""
     raw = item.get("rdfs:label")
     if raw is None:
         return []
     if isinstance(raw, str):
-        return [model.Label(text=raw, lang="en")]
+        return [Label(text=raw, lang="en")]
     if isinstance(raw, dict):
         lang = raw.get("@language", "en")
         text = raw.get("@value", raw.get("text", ""))
         if lang in ("en", "de", ""):
-            return [model.Label(text=text, lang=lang if lang else "en")]
+            return [Label(text=text, lang=lang if lang else "en")]
         return []
     if isinstance(raw, list):
         labels = []
         for entry in raw:
             if isinstance(entry, str):
-                labels.append(model.Label(text=entry, lang="en"))
+                labels.append(Label(text=entry, lang="en"))
             elif isinstance(entry, dict):
                 lang = entry.get("@language", "en")
                 text = entry.get("@value", entry.get("text", ""))
                 if lang in ("en", "de", "en-US", ""):
                     actual_lang = "en" if lang in ("en-US", "") else lang
-                    labels.append(model.Label(text=text, lang=actual_lang))
+                    labels.append(Label(text=text, lang=actual_lang))
         return labels
     return []
 
 
 def _get_descriptions(item: dict) -> list:
-    import opensemantic.core as _core
-    import opensemantic.quantities as _quantities
-    import opensemantic.characteristics.quantitative as _char_quant
-    import types
-    model = types.SimpleNamespace(
-        **{k: v for m in [_core, _quantities, _char_quant]
-           for k, v in vars(m).items() if not k.startswith("_")}
-    )
-
     def _clean(text: str) -> str:
         t = text.strip()
         if t.startswith("AI-generated: "):
@@ -120,16 +132,16 @@ def _get_descriptions(item: dict) -> list:
             continue
         if isinstance(raw, str):
             if raw.strip():
-                return [model.Description(text=_clean(raw), lang="en")]
+                return [Description(text=_clean(raw), lang="en")]
         elif isinstance(raw, dict):
             text = raw.get("@value", "").strip()
             if text:
-                return [model.Description(text=_clean(text), lang="en")]
+                return [Description(text=_clean(text), lang="en")]
         elif isinstance(raw, list):
             for entry in raw:
                 text = entry.get("@value", "") if isinstance(entry, dict) else str(entry)
                 if text.strip():
-                    return [model.Description(text=_clean(text), lang="en")]
+                    return [Description(text=_clean(text), lang="en")]
     return []
 
 
@@ -211,6 +223,9 @@ def _get_unit_enum_name(symbol: str, ucum_codes: list) -> str:
         return None
 
     import re
+    from pint import Quantity
+    if not isinstance(pQ, Quantity):
+        return None
 
     value = f"{pQ:9fLx}"
     # Handle pint's \tothe{N} pattern before extracting the unit block
@@ -311,12 +326,17 @@ def _sanitize_identifier(name: str) -> str:
     return result if result else "unknown"
 
 
-def _apply_patches(graph: list, id_dict: dict, patches_path: Path):
+def _apply_patches(graph: list, id_dict: dict, patches_path: Path,
+                   context: dict = None, type_items: dict = None):
     """Apply QUDT data corrections from patches.json."""
+    UUID_OVERRIDES.clear()
+    SYNTHETIC_UNITS.clear()
     if not patches_path.exists():
         return
     with open(patches_path, encoding="utf-8") as f:
         patches = json.load(f)
+    if context is None:
+        context = {}
 
     # Remove incorrect scalingOf relationships
     for unit_id, target in patches.get("remove_scaling_of", {}).items():
@@ -344,6 +364,25 @@ def _apply_patches(graph: list, id_dict: dict, patches_path: Path):
                 au for au in aus
                 if not (isinstance(au, dict) and au.get("@id") in units_to_remove)
             ]
+
+    # Add missing applicableUnit entries, so a unit becomes selectable for a
+    # quantity kind. Only stores the reference, so units defined by add_units
+    # can be named here regardless of patch order.
+    for qk_id, units_to_add in patches.get("add_applicable_units", {}).items():
+        if qk_id.startswith("_"):
+            continue
+        qk = id_dict.get(qk_id)
+        if qk is None:
+            print(f"Warning: add_applicable_units quantity kind {qk_id} not found")
+            continue
+        aus = qk.get("qudt:applicableUnit") or []
+        if isinstance(aus, dict):
+            aus = [aus]
+        known = {au.get("@id") for au in aus if isinstance(au, dict)}
+        for unit_id in units_to_add:
+            if unit_id not in known:
+                aus.append({"@id": unit_id})
+        qk["qudt:applicableUnit"] = aus
 
     # Fix description language tags
     for qk_id, correct_lang in patches.get("fix_description_lang", {}).items():
@@ -411,6 +450,131 @@ def _apply_patches(graph: list, id_dict: dict, patches_path: Path):
             continue
         SYMBOL_OVERRIDES[sym] = override
 
+    # Add missing qudt:scalingOf relationships (inverse of remove_scaling_of).
+    # A unit whose conversion factor is an exact multiple of an SI unit is a
+    # scaling of it; QUDT sometimes omits the link, which hides the unit.
+    for unit_id, base_id in patches.get("add_scaling_of", {}).items():
+        if unit_id.startswith("_"):
+            continue
+        item = id_dict.get(unit_id)
+        if item is None:
+            print(f"Warning: add_scaling_of unit {unit_id} not found")
+            continue
+        if "qudt:scalingOf" not in item:
+            item["qudt:scalingOf"] = {"@id": base_id}
+
+    # Declare a missing qudt:applicableSystem. Used for SI-coherent units
+    # (conversion factor 1.0, SI factor units) that QUDT leaves unassigned.
+    for unit_id, systems in patches.get("add_applicable_system", {}).items():
+        if unit_id.startswith("_"):
+            continue
+        item = id_dict.get(unit_id)
+        if item is None:
+            print(f"Warning: add_applicable_system unit {unit_id} not found")
+            continue
+        if isinstance(systems, str):
+            systems = [systems]
+        existing = item.get("qudt:applicableSystem") or []
+        if isinstance(existing, dict):
+            existing = [existing]
+        known = {s.get("@id") for s in existing if isinstance(s, dict)}
+        for sys_id in systems:
+            if sys_id not in known:
+                existing.append({"@id": sys_id})
+        item["qudt:applicableSystem"] = existing
+
+    # Point a unit at the correct quantity kind
+    for unit_id, qk_id in patches.get("fix_quantity_kind", {}).items():
+        if unit_id.startswith("_"):
+            continue
+        item = id_dict.get(unit_id)
+        if item:
+            item["qudt:hasQuantityKind"] = {"@id": qk_id}
+
+    # Add whole units that QUDT does not define, as SI-coherent top-level units.
+    # Runs before add_scaling_units so those can attach sub-units to them.
+    for unit_def in patches.get("add_units", []):
+        if isinstance(unit_def, str):
+            continue  # comment entry
+        new_id = unit_def["id"]
+        if new_id in id_dict:
+            continue
+        node = {
+            "@id": new_id,
+            "@type": ["qudt:Unit"],
+            "qudt:symbol": unit_def["symbol"],
+            "rdfs:label": [{"@language": "en", "@value": unit_def["label"]}],
+            "qudt:conversionMultiplier": {
+                "@type": "xsd:decimal",
+                "@value": str(unit_def.get("conversion_factor_from_si", 1.0)),
+            },
+            "qudt:applicableSystem": [
+                {"@id": s} for s in unit_def.get("applicable_system", ["sou:SI"])
+            ],
+            "qudt:hasFactorUnit": [
+                {
+                    "qudt:hasUnit": {"@id": fu["unit"]},
+                    "qudt:exponent": {"@type": "xsd:integer",
+                                      "@value": fu["exponent"]},
+                }
+                for fu in unit_def.get("factor_units", [])
+            ],
+        }
+        if unit_def.get("ucum_codes"):
+            node["qudt:ucumCode"] = [
+                {"@type": "qudt:UCUMcs", "@value": u} for u in unit_def["ucum_codes"]
+            ]
+        if unit_def.get("quantity_kind"):
+            node["qudt:hasQuantityKind"] = {"@id": unit_def["quantity_kind"]}
+        if unit_def.get("uuid"):
+            UUID_OVERRIDES[_resolve_curie(new_id, context)] = unit_def["uuid"]
+        SYNTHETIC_UNITS.add(_resolve_curie(new_id, context))
+        graph.append(node)
+        id_dict[new_id] = node
+        if type_items is not None:
+            type_items.setdefault("qudt:Unit", []).append(node)
+
+    # Add scaled sub-units that QUDT does not define. Each becomes a synthetic
+    # qudt:Unit node registered in the parent's custom:scaledBy, so the normal
+    # machinery turns it into a composed_units subobject of that parent.
+    for parent_id, scalings in patches.get("add_scaling_units", {}).items():
+        if parent_id.startswith("_"):
+            continue
+        parent = id_dict.get(parent_id)
+        if parent is None:
+            print(f"Warning: add_scaling_units parent {parent_id} not found")
+            continue
+        for sc in scalings:
+            new_id = sc["id"]
+            if new_id in id_dict:
+                continue
+            node = {
+                "@id": new_id,
+                "@type": ["qudt:Unit"],
+                "qudt:symbol": sc["symbol"],
+                "qudt:conversionMultiplier": {
+                    "@type": "xsd:decimal",
+                    "@value": str(sc["conversion_factor_from_si"]),
+                },
+                "qudt:scalingOf": {"@id": parent_id},
+                "rdfs:label": [{"@language": "en", "@value": sc["label"]}],
+            }
+            if sc.get("ucum_codes"):
+                node["qudt:ucumCode"] = [
+                    {"@type": "qudt:UCUMcs", "@value": u} for u in sc["ucum_codes"]
+                ]
+            # inherit structure from the parent so factor units and the quantity
+            # kind stay consistent
+            for inherited in ("qudt:hasFactorUnit", "qudt:hasQuantityKind",
+                              "qudt:hasDimensionVector", "qudt:applicableSystem"):
+                if inherited in parent:
+                    node[inherited] = parent[inherited]
+            if sc.get("uuid"):
+                UUID_OVERRIDES[_resolve_curie(new_id, context)] = sc["uuid"]
+            graph.append(node)
+            id_dict[new_id] = node
+            parent.setdefault("custom:scaledBy", []).append({"@id": new_id})
+
 
 def load_enriched_qudt(path: Path, patches_path: Path = PATCHES_PATH) -> dict:
     """Load enriched QUDT JSON-LD, apply patches, and build indices."""
@@ -431,7 +595,8 @@ def load_enriched_qudt(path: Path, patches_path: Path = PATCHES_PATH) -> dict:
         for t in types:
             type_items.setdefault(t, []).append(item)
 
-    _apply_patches(graph, id_dict, patches_path)
+    _apply_patches(graph, id_dict, patches_path, context, type_items)
+    _enrich_parent_qk_units(type_items, id_dict)
 
     return {
         "context": context,
@@ -441,16 +606,41 @@ def load_enriched_qudt(path: Path, patches_path: Path = PATCHES_PATH) -> dict:
     }
 
 
-def get_unit_prefix_entities(data: dict):
-    import opensemantic.core as _core
-    import opensemantic.quantities as _quantities
-    import opensemantic.characteristics.quantitative as _char_quant
-    import types
-    model = types.SimpleNamespace(
-        **{k: v for m in [_core, _quantities, _char_quant]
-           for k, v in vars(m).items() if not k.startswith("_")}
-    )
+def _enrich_parent_qk_units(type_items: dict, id_dict: dict):
+    """Propagate applicable units from child QKs to their parents.
 
+    Fundamental QKs (no skos:broader) should list all units applicable to
+    themselves and all descendants. QUDT sometimes omits these, causing
+    parent characteristics to have empty unit enumerations.
+    """
+    quantity_kinds = type_items.get("qudt:QuantityKind", [])
+    child_units_by_parent = {}
+    for qk in quantity_kinds:
+        broader = qk.get("skos:broader")
+        if not broader:
+            continue
+        if isinstance(broader, dict):
+            broader = [broader]
+        child_units = _get_values(qk.get("qudt:applicableUnit", []), "@id")
+        child_units = _expand_applicable_units(child_units, id_dict)
+        for b in broader:
+            b_id = b.get("@id", "") if isinstance(b, dict) else b
+            if b_id:
+                child_units_by_parent.setdefault(b_id, set()).update(child_units)
+    for qk in quantity_kinds:
+        qk_id = qk.get("@id", "")
+        if qk_id in child_units_by_parent:
+            existing = set(_get_values(qk.get("qudt:applicableUnit", []), "@id"))
+            new_units = child_units_by_parent[qk_id] - existing
+            if new_units:
+                au_list = qk.get("qudt:applicableUnit", [])
+                if not isinstance(au_list, list):
+                    au_list = [au_list] if au_list else []
+                au_list.extend({"@id": uid} for uid in sorted(new_units))
+                qk["qudt:applicableUnit"] = au_list
+
+
+def get_unit_prefix_entities(data: dict):
     prefixes = data["type_items"].get("qudt:Prefix", [])
     context = data["context"]
     entities = []
@@ -490,7 +680,7 @@ def get_unit_prefix_entities(data: dict):
         # Lowercase labels for prefixes (SI convention)
         for lbl in labels:
             lbl.text = lbl.text.lower()
-        entities.append(model.UnitPrefix(
+        entities.append(UnitPrefix(
             uuid=_make_uuid(uuid_uri),
             name=name,
             label=labels,
@@ -500,23 +690,40 @@ def get_unit_prefix_entities(data: dict):
             exact_ontology_match=sorted(set(exact_matches)),
         ))
         _sort_entity_arrays(entities[-1])
-    return entities
+
+    # Build prefix CURIE -> OSW ID map for use in prefix_units references
+    prefix_id_to_osw_id = {}
+    for item in prefixes:
+        item_id = item.get("@id", "")
+        full_uri = _resolve_curie(item_id, context)
+        uuid_uri = full_uri
+        si_match = item.get("qudt:siExactMatch")
+        if isinstance(si_match, dict) and "@id" in si_match:
+            resolved_si = _resolve_curie(si_match["@id"], context)
+            if "si-digital-framework.org" in resolved_si:
+                uuid_uri = resolved_si
+        elif isinstance(si_match, list):
+            for m in si_match:
+                if isinstance(m, dict) and "@id" in m:
+                    resolved_si = _resolve_curie(m["@id"], context)
+                    if "si-digital-framework.org" in resolved_si:
+                        uuid_uri = resolved_si
+                        break
+        prefix_uuid = _make_uuid(uuid_uri)
+        prefix_id_to_osw_id[item_id] = (
+            f"Item:OSW{prefix_uuid.replace('-', '')}"
+        )
+
+    return entities, prefix_id_to_osw_id
 
 
-def get_quantity_unit_entities(data: dict):
+def get_quantity_unit_entities(data: dict, prefix_id_to_osw_id: dict = None):
     """Create QuantityUnit and ComposedQuantityUnitWithUnitPrefix entities.
 
     Returns (non_composed_units, composed_units, unit_id_to_osw_id).
     """
-    import opensemantic.core as _core
-    import opensemantic.quantities as _quantities
-    import opensemantic.characteristics.quantitative as _char_quant
-    import types
-    model = types.SimpleNamespace(
-        **{k: v for m in [_core, _quantities, _char_quant]
-           for k, v in vars(m).items() if not k.startswith("_")}
-    )
-
+    if prefix_id_to_osw_id is None:
+        prefix_id_to_osw_id = {}
     context = data["context"]
     id_dict = data["id_dict"]
     units = data["type_items"].get("qudt:Unit", [])
@@ -537,9 +744,26 @@ def get_quantity_unit_entities(data: dict):
     non_prefixed_non_composed = []
     non_prefixed_composed = []
     for item in units:
-        if not _is_si_applicable(item) and item.get("@id", "") not in non_si_with_si_variant:
-            continue
         item_id = item.get("@id", "")
+        if not _is_si_applicable(item) and item_id not in non_si_with_si_variant:
+            # Include non-SI units that are scalings of SI units AND belong
+            # to a commonly-used system (CGS-ESU, CGS-EMU, CGS-Gauss, CGS)
+            scaling_of = item.get("qudt:scalingOf", {})
+            if isinstance(scaling_of, list):
+                scaling_of = scaling_of[0] if scaling_of else {}
+            scaling_of_id = scaling_of.get("@id", "") if isinstance(scaling_of, dict) else ""
+            base_item = id_dict.get(scaling_of_id)
+            app_sys = item.get("qudt:applicableSystem", {})
+            if isinstance(app_sys, list):
+                sys_ids = [s.get("@id", "") for s in app_sys]
+            elif isinstance(app_sys, dict):
+                sys_ids = [app_sys.get("@id", "")]
+            else:
+                sys_ids = []
+            cgs_systems = {"sou:CGS", "sou:CGS-ESU", "sou:CGS-EMU", "sou:CGS-GAUSS"}
+            is_cgs = bool(set(sys_ids) & cgs_systems)
+            if not (base_item and _is_si_applicable(base_item) and is_cgs):
+                continue
         local_name = item_id.split(":")[-1] if ":" in item_id else item_id
         has_factor_units = "qudt:hasFactorUnit" in item
         has_prefix = "qudt:prefix" in item
@@ -638,8 +862,7 @@ def get_quantity_unit_entities(data: dict):
 
             prefix_ref = pu_item.get("qudt:prefix", {})
             prefix_id = prefix_ref.get("@id", "") if isinstance(prefix_ref, dict) else ""
-            prefix_full_uri = _resolve_curie(prefix_id, context) if prefix_id else ""
-            prefix_osw_id = f"Item:OSW{_make_uuid(prefix_full_uri).replace('-', '')}" if prefix_full_uri else ""
+            prefix_osw_id = prefix_id_to_osw_id.get(prefix_id, "")
             prefix_symbol = ""
             prefix_item = id_dict.get(prefix_id)
             if prefix_item:
@@ -654,7 +877,7 @@ def get_quantity_unit_entities(data: dict):
                 except (ValueError, TypeError):
                     pass
 
-            prefix_unit_list.append(model.PrefixUnit(
+            prefix_unit_list.append(PrefixUnit(
                 uuid=pu_uuid,
                 osw_id=pu_osw_id,
                 main_symbol=pu_item.get("qudt:symbol", ""),
@@ -665,7 +888,7 @@ def get_quantity_unit_entities(data: dict):
                 ucum_codes=_get_ucum(pu_item),
             ))
 
-        non_composed_entities.append(model.QuantityUnit(
+        non_composed_entities.append(QuantityUnit(
             uuid=npu_uuid,
             name=pascal_case(labels[0].text) if labels else (npu_id.split(":")[-1] if ":" in npu_id else npu_id),
             label=labels,
@@ -674,7 +897,7 @@ def get_quantity_unit_entities(data: dict):
             conversion_factor_from_si=_get_conv_factor(npu),
             ucum_codes=_get_ucum(npu),
             prefix_units=prefix_unit_list if prefix_unit_list else None,
-            exact_ontology_match=[full_uri],
+            exact_ontology_match=([] if full_uri in SYNTHETIC_UNITS else [full_uri]),
         ))
 
     # Process composed units
@@ -707,7 +930,7 @@ def get_quantity_unit_entities(data: dict):
                 except (ValueError, TypeError):
                     pass
 
-            sub_cls = getattr(model, "ComposedUnitElement", model.ComposedUnit)
+            sub_cls = ComposedUnitElement
             sub_kwargs = dict(
                 uuid=pcu_uuid,
                 osw_id=pcu_osw_id,
@@ -718,9 +941,12 @@ def get_quantity_unit_entities(data: dict):
             )
             if "conversion_factor_to_main_unit" in sub_cls.__fields__:
                 sub_kwargs["conversion_factor_to_main_unit"] = pcu_conv_to_main if pcu_conv_to_main is not None else 1.0
-            composed_unit_list.append(sub_cls(**sub_kwargs))
+            try:
+                composed_unit_list.append(sub_cls(**sub_kwargs))
+            except Exception as e:
+                print(f"Warning: skipping composed unit subobject {pcu_ref}: {e}")
 
-        composed_entities.append(model.ComposedUnit(
+        composed_entities.append(ComposedUnit(
             uuid=npcu_uuid,
             osw_id=f"OSW{npcu_uuid.replace('-', '')}",
             name=pascal_case(labels[0].text) if labels else (npcu_id.split(":")[-1] if ":" in npcu_id else npcu_id),
@@ -732,7 +958,7 @@ def get_quantity_unit_entities(data: dict):
             ucum_codes=_get_ucum(npcu),
             factor_units=_extract_factor_units(npcu) or None,
             composed_units=composed_unit_list if composed_unit_list else None,
-            exact_ontology_match=[full_uri],
+            exact_ontology_match=([] if full_uri in SYNTHETIC_UNITS else [full_uri]),
         ))
 
     for e in non_composed_entities:
@@ -778,15 +1004,6 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
 
     Returns (quantity_kinds, fundamental_characteristics, non_fundamental_characteristics).
     """
-    import opensemantic.core as _core
-    import opensemantic.quantities as _quantities
-    import opensemantic.characteristics.quantitative as _char_quant
-    import types
-    model = types.SimpleNamespace(
-        **{k: v for m in [_core, _quantities, _char_quant]
-           for k, v in vars(m).items() if not k.startswith("_")}
-    )
-
     context = data["context"]
     id_dict = data["id_dict"]
     quantity_kinds = data["type_items"].get("qudt:QuantityKind", [])
@@ -802,6 +1019,9 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
         "http://qudt.org/vocab/quantitykind/Radiance",
         "http://qudt.org/vocab/quantitykind/SpecificImpulseByWeight",
     }
+
+    # Note: parent QK unit enrichment is now done in load_enriched_qudt
+    # via _enrich_parent_qk_units, so all builds benefit from it.
 
     osw_quantity_list = []
     osw_fundamental_list = []
@@ -833,7 +1053,7 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
                 lbl.text = lbl.text[0].upper() + lbl.text[1:]
 
         if full_uri in label_corrections:
-            labels[0] = model.Label(text=label_corrections[full_uri], lang=labels[0].lang)
+            labels[0] = Label(text=label_corrections[full_uri], lang=labels[0].lang)
 
         name = pascal_case(labels[0].text)
 
@@ -865,11 +1085,11 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
         is_fundamental = full_uri in hardcoded_fundamental or not has_broader
 
         if is_fundamental:
-            qk_entity = model.QuantityKind(
+            qk_entity = QuantityKind(
                 uuid=_make_uuid(full_uri),
                 label=labels,
                 description=descriptions,
-                exact_ontology_match=[full_uri],
+                exact_ontology_match=([] if full_uri in SYNTHETIC_UNITS else [full_uri]),
                 close_ontology_match=close_matches,
                 units=sorted(si_unit_osw_ids),
                 name=name,
@@ -900,7 +1120,7 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
                 enum_name = _get_unit_enum_name(symbol, ucum_codes)
                 if enum_name is None:
                     enum_name = _sanitize_identifier(symbol)
-                unit_enum.append(model.UnitEnumerationElement(
+                unit_enum.append(UnitEnumerationElement(
                     osw_id=osw_id, name=enum_name, symbol=symbol,
                 ))
                 conv = au_item.get("qudt:conversionMultiplier", {})
@@ -943,7 +1163,7 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
 
             quantity_property = f"Property:Has{name}Value"
 
-            char = model.FundamentalQuantityValueType(
+            char = FundamentalQuantityValueType(
                 subclass_of=["Category:OSW4082937906634af992cf9a1b18d772cf"],
                 quantity=get_full_title(qk_entity),
                 uuid=_make_uuid("characteristic:" + full_uri),
@@ -967,7 +1187,7 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
 
             quantity_property = f"Property:Has{name}Value"
 
-            char = model.QuantityValueType(
+            char = QuantityValueType(
                 subclass_of=[broader_cat],
                 quantity=None,
                 uuid=_make_uuid("characteristic:" + full_uri),
