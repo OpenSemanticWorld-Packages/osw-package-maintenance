@@ -60,6 +60,9 @@ UUID_OVERRIDES = {}
 # They must not claim an exact_ontology_match, because no such QUDT term exists.
 SYNTHETIC_UNITS = set()
 
+# Same for quantity kinds synthesized from patches.json.
+SYNTHETIC_QUANTITY_KINDS = set()
+
 
 def _make_uuid(uri: str) -> str:
     if uri in UUID_OVERRIDES:
@@ -333,6 +336,7 @@ def _apply_patches(graph: list, id_dict: dict, patches_path: Path,
     """Apply QUDT data corrections from patches.json."""
     UUID_OVERRIDES.clear()
     SYNTHETIC_UNITS.clear()
+    SYNTHETIC_QUANTITY_KINDS.clear()
     if not patches_path.exists():
         return
     with open(patches_path, encoding="utf-8") as f:
@@ -562,6 +566,49 @@ def _apply_patches(graph: list, id_dict: dict, patches_path: Path,
             graph.append(node)
             id_dict[new_id] = node
             parent.setdefault("custom:scaledBy", []).append({"@id": new_id})
+
+    # Add quantity kinds QUDT does not define. Listing the SI-coherent unit in
+    # applicable_units is enough, _expand_applicable_units pulls in its
+    # scalings. Without skos:broader they are treated as fundamental and get
+    # their own characteristic with a unit enumeration.
+    for qk_def in patches.get("add_quantity_kinds", []):
+        if isinstance(qk_def, str):
+            continue  # comment entry
+        new_id = qk_def["id"]
+        if new_id in id_dict:
+            continue
+        missing = [u for u in qk_def["applicable_units"] if u not in id_dict]
+        if missing:
+            print(f"Warning: add_quantity_kinds {new_id} references unknown "
+                  f"units {missing}")
+            continue
+        node = {
+            "@id": new_id,
+            "@type": ["qudt:QuantityKind"],
+            "rdfs:label": [{"@language": "en", "@value": qk_def["label"]}],
+            "qudt:applicableUnit": [{"@id": u} for u in qk_def["applicable_units"]],
+        }
+        if qk_def.get("description"):
+            node["dcterms:description"] = [
+                {"@language": "en", "@value": qk_def["description"]}
+            ]
+        if qk_def.get("broader"):
+            node["skos:broader"] = {"@id": qk_def["broader"]}
+        dimension = qk_def.get("dimension_vector")
+        if dimension is None:
+            first_unit = id_dict[qk_def["applicable_units"][0]]
+            dimension = first_unit.get("qudt:hasDimensionVector")
+        if dimension:
+            node["qudt:hasDimensionVector"] = (
+                {"@id": dimension} if isinstance(dimension, str) else dimension
+            )
+        if qk_def.get("uuid"):
+            UUID_OVERRIDES[_resolve_curie(new_id, context)] = qk_def["uuid"]
+        SYNTHETIC_QUANTITY_KINDS.add(_resolve_curie(new_id, context))
+        graph.append(node)
+        id_dict[new_id] = node
+        if type_items is not None:
+            type_items.setdefault("qudt:QuantityKind", []).append(node)
 
 
 def load_enriched_qudt(path: Path, patches_path: Path = PATCHES_PATH) -> dict:
@@ -1045,7 +1092,8 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
 
         name = pascal_case(labels[0].text)
 
-        close_matches = [full_uri]
+        synthetic_iris = SYNTHETIC_UNITS | SYNTHETIC_QUANTITY_KINDS
+        close_matches = [] if full_uri in synthetic_iris else [full_uri]
         for match_key in ("qudt:dbpediaMatch", "qudt:siExactMatch"):
             val = qk.get(match_key)
             if val is None:
@@ -1077,7 +1125,9 @@ def get_quantitykind_and_characteristics(data: dict, unit_id_to_osw_id: dict, un
                 uuid=_make_uuid(full_uri),
                 label=labels,
                 description=descriptions,
-                exact_ontology_match=([] if full_uri in SYNTHETIC_UNITS else [full_uri]),
+                exact_ontology_match=(
+                    [] if full_uri in synthetic_iris else [full_uri]
+                ),
                 close_ontology_match=close_matches,
                 units=sorted(si_unit_osw_ids),
                 name=name,
