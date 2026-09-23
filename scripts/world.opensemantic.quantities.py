@@ -106,7 +106,7 @@ package_meta_data = WorldMeta(
     subdir="base",
     branch="main",
     description=("Contains fundamental (physical) quantities, units and prefixes"),
-    version="0.6.0",
+    version="0.7.0",
     requiredPackages=[
         "world.opensemantic.core",
     ],

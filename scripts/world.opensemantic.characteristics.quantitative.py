@@ -337,7 +337,7 @@ package_meta_data = WorldMeta(
     subdir="base",
     branch="main",
     description=("Contains measureable qualitities based on (physical) quantities"),
-    version="0.5.2",
+    version="0.7.0",
     requiredPackages=[
         "world.opensemantic.quantities",
     ],
