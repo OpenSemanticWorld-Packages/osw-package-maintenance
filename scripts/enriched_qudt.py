@@ -126,23 +126,25 @@ def _get_descriptions(item: dict) -> list:
             t = t[len("AI-generated: "):]
         return t
 
+    candidates = []
     for attr in ("qudt:plainTextDescription", "dcterms:description"):
         raw = item.get(attr)
         if raw is None:
             continue
-        if isinstance(raw, str):
-            if raw.strip():
-                return [Description(text=_clean(raw), lang="en")]
-        elif isinstance(raw, dict):
-            text = raw.get("@value", "").strip()
-            if text:
-                return [Description(text=_clean(text), lang="en")]
-        elif isinstance(raw, list):
-            for entry in raw:
-                text = entry.get("@value", "") if isinstance(entry, dict) else str(entry)
-                if text.strip():
-                    return [Description(text=_clean(text), lang="en")]
-    return []
+        for entry in raw if isinstance(raw, list) else [raw]:
+            if isinstance(entry, dict):
+                text, lang = entry.get("@value", ""), entry.get("@language")
+            else:
+                text, lang = str(entry), None
+            if text.strip():
+                candidates.append((_clean(text), lang or "en"))
+    if not candidates:
+        return []
+    # QUDT often carries a German qudt:plainTextDescription next to an English
+    # dcterms:description. Take the English one, otherwise keep the actual
+    # language of what is there.
+    text, lang = next((c for c in candidates if c[1] == "en"), candidates[0])
+    return [Description(text=text, lang=lang)]
 
 
 def _is_si_applicable(unit_item: dict) -> bool:
@@ -383,20 +385,6 @@ def _apply_patches(graph: list, id_dict: dict, patches_path: Path,
             if unit_id not in known:
                 aus.append({"@id": unit_id})
         qk["qudt:applicableUnit"] = aus
-
-    # Fix description language tags
-    for qk_id, correct_lang in patches.get("fix_description_lang", {}).items():
-        if qk_id.startswith("_"):
-            continue
-        qk = id_dict.get(qk_id)
-        if qk:
-            desc = qk.get("dcterms:description")
-            if isinstance(desc, dict) and desc.get("@language") == "en":
-                desc["@language"] = correct_lang
-            elif isinstance(desc, list):
-                for d in desc:
-                    if isinstance(d, dict) and d.get("@language") == "en":
-                        d["@language"] = correct_lang
 
     # Fix labels
     for qk_id, fixes in patches.get("fix_labels", {}).items():
