@@ -315,6 +315,9 @@ page_titles = [
     "Category:OSW4082937906634af992cf9a1b18d772cf",  # "Quantity Value",
     "Category:OSWac07a46c2cf14f3daec503136861f5ab",  # "Quantity Value Type",
     "Category:OSWc7f9aec4f71f4346b6031f96d7e46bd7",  # "Fundamental Quantity Value Type",
+    # adopted from a downstream project package, see world.opensemantic.quantities#2
+    "Category:OSW68ca7734ec34417fa9b2258b23ddc6c0",  # "Thermal conductivity slope"
+    "Property:HasThermalConductivitySlopeValue",
 ]
 page_titles.extend(sorted(pages.keys()))
 
@@ -337,7 +340,7 @@ package_meta_data = WorldMeta(
     subdir="base",
     branch="main",
     description=("Contains measureable qualitities based on (physical) quantities"),
-    version="0.7.0",
+    version="0.8.0",
     requiredPackages=[
         "world.opensemantic.quantities",
     ],

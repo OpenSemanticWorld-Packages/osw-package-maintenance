@@ -95,6 +95,9 @@ page_titles = [
     "Category:OSW00fbd6feecb5408997ca18d4e681a131",  # "Quantity Kind"
     "Category:OSW27782669526d4d9a8de83659c03c64d5",  # "System Of Quantities And Units"
     "Property:HasSymbol",
+    # adopted from a downstream project package, see world.opensemantic.quantities#2
+    "Item:OSW4f99615d3a9548ee86ebc03c4bdf48fe",  # "Watt per Kelvin per Second"
+    "Item:OSW74ed2b89cb5148b2ac191f54458d4842",  # "Thermal conductivity slope"
 ]
 page_titles.extend(sorted(pages.keys()))
 
@@ -106,7 +109,7 @@ package_meta_data = WorldMeta(
     subdir="base",
     branch="main",
     description=("Contains fundamental (physical) quantities, units and prefixes"),
-    version="0.7.0",
+    version="0.8.0",
     requiredPackages=[
         "world.opensemantic.core",
     ],
