@@ -1,5 +1,13 @@
 # Schema Creation and Editing Guidelines
 
+## Skills
+
+Agent skills for this repository are in `.agents/skills/<name>/`. Each skill has a `SKILL.md` with a `description` that says when to use it. Read the `SKILL.md` of a matching skill before starting the task, and run its commands from the folder that the `SKILL.md` names.
+
+| Skill | Use when |
+|-------|----------|
+| [transferring-osl-schemas-to-page-packages](.agents/skills/transferring-osl-schemas-to-page-packages/SKILL.md) | OSL category, property or item pages from an application repository must be compared with, or moved into, the page packages under `packages/`, or a schema feature must be removed from a package schema |
+
 ## Package Structure
 
 Each OSW schema package lives under `packages/<package-name>/` with this layout:
